@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane fx:id="anchor" 
+prefHeight="850.0" 
+prefWidth="1288.0" 
+xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.UIController">
+   <children>
+      <GridPane>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+                  <Pane fx:id="pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-0.38916015625" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Button fx:id="btn_1" layoutX="169.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleClickAction" text="commit" />
+                        <Label fx:id="txt_1" layoutX="250.0" layoutY="19.0" text="change" />
+                        <HTMLEditor fx:id="htmleditor" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="169.0" layoutY="52.0" prefHeight="636.0" prefWidth="632.0" />
+                        <ScrollPane fx:id="scrollpane" prefHeight="652.0" prefWidth="165.0">
+                           <content>
+                              <ListView fx:id="listview" prefHeight="693.0" prefWidth="248.0" />
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </Pane>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>
