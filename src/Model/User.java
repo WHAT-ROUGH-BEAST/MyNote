@@ -3,19 +3,20 @@ package Model;
 import java.beans.PropertyChangeListener;
 import java.util.*;
 
-import application.DeepCopy;
-
 public class User extends Model
 {
 	private String account;
 	private String password;
-	private List<NoteBook> noteBooks;
+	private ArrayList<NoteBook> noteBooks;
 	
 	@Override
 	public void initialize()
 	{
-		// TODO Auto-generated method stub
-		
+		// 每个用户初始笔记本：defaultBook
+		NoteBook defaultBook = new NoteBook();
+		defaultBook.initialize();
+		defaultBook.setName("defaultBook");
+		noteBooks = new ArrayList<NoteBook>(Arrays.asList(defaultBook));
 	}
 	
 	// getter
@@ -29,25 +30,37 @@ public class User extends Model
 		return password;
 	}
 	
-	public List<NoteBook> getNoteBooks()
+	public ArrayList<NoteBook> getNoteBooks()
 	{
-		return noteBooks;
+		return new ArrayList<NoteBook>(noteBooks);
 	}
 	
 	// setter
 	public void setAccount(String account)
 	{
+		observer.firePropertyChange("new account", this.account, account);
 		this.account = account;
 	}
 	
 	public void setPassword(String password)
 	{
+		observer.firePropertyChange("new password", this.password, password);
 		this.password = password;
 	}
 	
-	public void setNoteBooks(List<NoteBook> noteBooks)
+	public void setNoteBooks(ArrayList<NoteBook> noteBooks)
 	{
-		this.noteBooks = (List<NoteBook>)DeepCopy.deepCopy(noteBooks);
+		// 提示noteview改变
+		ArrayList<String> names = new ArrayList<>();
+		for (NoteBook noteBook : noteBooks)
+		{
+			names.add(noteBook.getName());
+		}
+		observer.firePropertyChange("noteBookNamesChanged", null, names);
+		
+		// 
+		observer.firePropertyChange("new noteBooks", null, password);
+		this.noteBooks = new ArrayList<NoteBook>(noteBooks);
 	}
 
 	@Override

@@ -6,30 +6,64 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import Controller.Editor;
+import Controller.UserController;
+import Model.User;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 
-/**
- * 
- * @author 18069
- * View part of main screen
- */
 public class MainView extends View
 {
-	// 这个变量名一定是这样的模式：`<fx:id>Controller`,java文件名、类名、fxml文件名随便
-//	@FXML private EditorView editorviewController;
+	@FXML Button newButton, importButton,
+				exportButton, notebookButton, searchButton;
+	
+	@FXML NoteView noteviewController;
+	
+	@Override
+	public void initialize(URL location, ResourceBundle resources)
+	{
+		model = new User();
+		model.initialize();
+		controller = new UserController(model, this);
+		model.addPropertyChangeListener(this);
+		
+		// 设置用户
+		noteviewController.setCurrentNoteBook((User)model);
+	}
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt)
 	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
-		// TODO Auto-generated method stub
 		
 	}
 	
+	// button事件
+	@FXML
+	private void newButtonPressAction()
+	{
+		noteviewController.createNewNote();
+	}
+	
+	@FXML 
+	private void importButtonPressAction()
+	{
+		
+	}
+	
+	@FXML 
+	private void notebookButtonPressAction()
+	{
+		
+	}
+	
+	@FXML 
+	private void exportButtonPressAction()
+	{
+		
+	}
+	
+	@FXML 
+	private void searchButtonPressAction()
+	{
+		
+	}
 }

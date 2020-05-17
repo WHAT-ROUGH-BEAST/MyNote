@@ -27,7 +27,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import netscape.javascript.JSException;
 
-public class EditorView extends View
+interface EditorViewInterface
+{
+	NoteContent updateContent();
+	void setCurrentContent(NoteContent content);
+}
+
+public class EditorView extends View implements EditorViewInterface
 {
 	@FXML private HTMLEditor htmlEditor;
 	private WebEngine engine;
@@ -37,15 +43,12 @@ public class EditorView extends View
 			AttachButton = new Button("Attach"), 
 			AudioButton = new Button("Audio");
 	
-	public static String 
-	htmlImgHead = "<p><img src=\"data:image/;base64, ",
-	htmlImgTail = "\"/></p>";
-	
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
 		// mvc
 		model = new NoteContent();
+		model.initialize();
 		controller = new Editor(model, this);
 		
 		model.addPropertyChangeListener(this);
@@ -60,20 +63,27 @@ public class EditorView extends View
 		AudioButton.setOnAction((event) -> onBtnAction("Audio"));
 	}
 	
-	public void initWebEngine()
-	{
-		Node webNode = htmlEditor.lookup(".web-view");
-		if (!(webNode instanceof WebView)) 
-			throw new RuntimeException();
-		WebView webView = (WebView) webNode;
-		engine = webView.getEngine();
-	}
-	
-	// do what when things changed in model
+	// 响应被观察者model中的改变
 	@Override
 	public void propertyChange(PropertyChangeEvent evt)
 	{
 		htmlEditor.setHtmlText((String)evt.getNewValue());
+	}
+	
+	// 给noteview一个接口
+	@Override
+	public NoteContent updateContent()
+	{
+		// 点击确认按钮之后，更新内容
+		((Editor)controller).updateText(htmlEditor.getHtmlText());
+		return (NoteContent) this.model;
+	}
+	
+	@Override
+	public void setCurrentContent(NoteContent content)
+	{
+		model = content;
+		((Editor)controller).setCurrentContent(content);
 	}
 	
 	private void addExtraButton()
@@ -89,7 +99,7 @@ public class EditorView extends View
 		bar.getItems().add(new Separator(Orientation.VERTICAL));
 	}
 	
-	public void onBtnAction(String actionType)
+	private void onBtnAction(String actionType)
 	{
 		try
 		{
@@ -103,12 +113,10 @@ public class EditorView extends View
 					break;
 				case "Attach":
 					((Editor)controller).addAttach(base64data);
-					
 					base64data = urlToPic("file");
 					break;
 				case "Audio":
 					((Editor)controller).addAudio(base64data);
-					
 					base64data = urlToPic("audio");
 					break;
 				default:
@@ -116,16 +124,19 @@ public class EditorView extends View
 			}
 			
 			// 通过controller更新model
-			// TODO : 这个位置有问题，应该是点击确认按钮之后才更
+			// TODO : 再加一个位置，应该是点击确认按钮之后才更
 			((Editor)controller).updateText(htmlEditor.getHtmlText() 
-					+ htmlImgHead + base64data + htmlImgTail);
+					+ htmlExcecutor.htmlImgHead 
+					+ base64data 
+					+ htmlExcecutor.htmlImgTail);
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}   
 	}
-	
+
+	// 取得resource中的图片
 	private String urlToPic(String picName) throws Exception
 	{
 		URL url = getClass().getClassLoader().getResource("image/" + picName + ".png");
@@ -133,6 +144,17 @@ public class EditorView extends View
 		return base64pic;
 	}
 	
+	// 加载htmleditor编辑工具
+	private void initWebEngine()
+	{
+		Node webNode = htmlEditor.lookup(".web-view");
+		if (!(webNode instanceof WebView)) 
+			throw new RuntimeException();
+		WebView webView = (WebView) webNode;
+		engine = webView.getEngine();
+	}
+	
+	// TODO : 实现在光标后添加图片
 	private void insertAfterCursor(String txt)
 	{
         try {
@@ -147,6 +169,10 @@ public class EditorView extends View
 
 class htmlExcecutor
 {
+	public static String 
+	htmlImgHead = "<p><img src=\"data:image/;base64, ",
+	htmlImgTail = "\"/></p>";
+	
 	static String jsCodeInsertHtml = 
 			"function insertHtmlAtCursor(html) {\n"
 			        + "    var range, node;\n"

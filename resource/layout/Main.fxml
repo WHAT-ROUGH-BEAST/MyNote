@@ -32,19 +32,18 @@
                <children>
                   <AnchorPane prefHeight="713.0" prefWidth="111.0">
                      <children>
-                        <Button layoutX="6.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="new" />
-                        <Button layoutX="6.0" layoutY="88.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="import" />
-                        <Button layoutX="6.0" layoutY="173.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="notebook" />
-                        <Button layoutX="6.0" layoutY="265.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="export" />
-                        <Button layoutX="6.0" layoutY="375.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="search" />
+                        <Button fx:id="newButton" layoutX="6.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="new" 
+                        		onAction="#newButtonPressAction"/>
+                        <Button fx:id="importButton" layoutX="6.0" layoutY="88.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="import" 
+                        		onAction="#importButtonPressAction"/>
+                        <Button fx:id="notebookButton" layoutX="6.0" layoutY="173.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="notebook" 
+                        		onAction="#notebookButtonPressAction"/>
+                        <Button fx:id="exportButton" layoutX="6.0" layoutY="265.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="export" 
+                        		onAction="#exportButtonPressAction"/>
+                        <Button fx:id="searchButton" layoutX="6.0" layoutY="375.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="search" 
+                        		onAction="#searchButtonPressAction"/>
                      </children>
                   </AnchorPane>
-               </children>
-            </VBox>
-            <VBox prefHeight="699.0" prefWidth="230.0">
-               <children>
-                  <fx:include fx:id="remindview" source="RemindView.fxml" />
-                  <fx:include fx:id="notelistview" source="NoteListView.fxml" />
                </children>
             </VBox>
             <fx:include fx:id="noteview" source="NoteView.fxml" />

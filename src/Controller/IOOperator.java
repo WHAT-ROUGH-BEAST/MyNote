@@ -16,13 +16,13 @@ import javafx.stage.Window;
 
 public class IOOperator
 {
-	private static LinkedHashMap<String, String[]> filter = new LinkedHashMap<>();
+	private static LinkedHashMap<String, List<String>> filter = new LinkedHashMap<>();
 	static 
 	{
 		// TODO: 补上类型过滤
-		filter.put("Img",	new String[]{"All Files", "*.*"});
-		filter.put("Attach",new String[]{"All Files", "*.*"});
-		filter.put("Audio", new String[]{"All Files", "*.*"});
+		filter.put("Img",	new ArrayList<String>(Arrays.asList("*.jpg", "*.png", "*.bmp", "*.gif")));
+		filter.put("Attach",new ArrayList<String>(Arrays.asList("*.*")));
+		filter.put("Audio", new ArrayList<String>(Arrays.asList("*.mp3", "*.m4a", "*.wma", "*.wav")));
 	}
 	
 	//
@@ -38,8 +38,8 @@ public class IOOperator
 	{
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select a file to import");
-        fileChooser.setSelectedExtensionFilter(
-        		new FileChooser.ExtensionFilter(filter.get(actionType)[0], filter.get(actionType)[1]));
+        fileChooser.getExtensionFilters().add(
+        		new FileChooser.ExtensionFilter(actionType, filter.get(actionType)));
         File selectedFile = fileChooser.showOpenDialog(window);
         if (selectedFile == null) 
         	throw new NullPointerException();
@@ -55,7 +55,6 @@ public class IOOperator
 			if (file.length() > 100*1024*1024)
 				throw new Exception("File too big");
 			
-			String type = Files.probeContentType(file.toPath());
 			byte[] data = Files.readAllBytes(file.toPath());
 			// base64data可以不依赖地址保存文件数据
 			String base64data = Base64.getEncoder().encodeToString(data);

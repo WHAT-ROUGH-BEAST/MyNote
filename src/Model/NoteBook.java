@@ -2,18 +2,15 @@ package Model;
 
 import java.beans.PropertyChangeListener;
 import java.util.*;
-
 public class NoteBook extends Model
 {
 	private String name;
-	// 接受导出类等，视需求决定
-	private List<Note> notes;
+	private ArrayList<Note> notes;
 	
 	@Override
 	public void initialize()
 	{
-		// TODO Auto-generated method stub
-		
+		notes = new ArrayList<Note>();
 	}
 	
 	// getter 
@@ -22,7 +19,7 @@ public class NoteBook extends Model
 		return name;
 	}
 
-	public List<Note> getNodes()
+	public ArrayList<Note> getNotes()
 	{
 		return notes;
 	}
@@ -30,11 +27,13 @@ public class NoteBook extends Model
 	// setter
 	public void setName(String name)
 	{
+		observer.firePropertyChange("new name", null, name);
 		this.name = name;
 	}
 	
-	public void setNotes(List<Note> notes)
+	public void setNotes(ArrayList<Note> notes)
 	{
+		observer.firePropertyChange("new notes", null, notes);
 		this.notes = notes;
 	}
 

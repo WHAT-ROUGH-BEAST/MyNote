@@ -6,15 +6,21 @@ import java.net.URL;
 import java.util.*;
 
 import Controller.IOOperator;
-import application.DeepCopy;
 
-public class NoteContent extends Model
+public class NoteContent extends Model implements Cloneable
 {
 	// text甚至能直接存图片，因为现在图片都是base64
 	private String text;
 	private ArrayList<Attachment> attachs;
 	private ArrayList<Audio> audios;
 
+	@Override
+	public void initialize()
+	{
+		attachs = new ArrayList<Attachment>();
+		audios = new ArrayList<Audio>();
+	}
+	
 	// getters
 	public String getText()
 	{
@@ -23,25 +29,18 @@ public class NoteContent extends Model
 	
 	public ArrayList<Attachment> getAttachs()
 	{
-		return DeepCopy.deepCopy(attachs);
+		return new ArrayList<Attachment>(this.attachs);
 	}
 	
 	public ArrayList<Audio> getAudios()
 	{
-		return DeepCopy.deepCopy(audios);
-	}
-	
-	@Override
-	public void initialize()
-	{
-		attachs = new ArrayList<Attachment>();
-		audios = new ArrayList<>();
+		return new ArrayList<Audio>(this.audios);
 	}
 	
 	// setter
 	public void setText(String text)
 	{
-		observer.firePropertyChange("text", this.text, text);
+		observer.firePropertyChange("text", null, text);
 		this.text = text;
 	}
 	
@@ -75,6 +74,17 @@ public class NoteContent extends Model
 	public void removePropertyChangeListener(PropertyChangeListener listener)
 	{
 		observer.removePropertyChangeListener(listener);
+	}
+	
+	@Override
+	public NoteContent clone()
+	{
+		NoteContent nc = new NoteContent();
+		nc.text = this.text;
+		nc.observer = this.observer;
+		nc.attachs = new ArrayList<Attachment>(attachs);
+		nc.audios = new ArrayList<Audio>(this.audios);
+		return nc;
 	}
 }
 

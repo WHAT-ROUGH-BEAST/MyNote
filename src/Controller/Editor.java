@@ -12,9 +12,11 @@ interface EditorInterface
 {
 	void addAttach(String base64data);
 	void addAudio(String base64data);
+	void deleteContentFile(int id);
 	void updateText(String text);
 	void downloadFile();
 	void playAudio();
+	void setCurrentContent(NoteContent content);
 }
 
 public class Editor extends Controller implements EditorInterface
@@ -25,6 +27,7 @@ public class Editor extends Controller implements EditorInterface
 	public Editor(Model model, View view)
 	{
 		super(model, view);
+		// model.initialize();
 	}
 
 	@Override
@@ -47,6 +50,7 @@ public class Editor extends Controller implements EditorInterface
 		IDs.add(id);
 	}
 
+	// TODO : 视图点击事件处理
 	@Override
 	public void downloadFile()
 	{
@@ -54,10 +58,26 @@ public class Editor extends Controller implements EditorInterface
 		
 	}
 	
+	// TODO : 视图点击事件处理
 	@Override
 	public void playAudio()
 	{
 		// TODO Auto-generated method stub
 		
+	}
+
+	// TODO : 视图删除事件的处理
+	@Override
+	public void deleteContentFile(int id)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setCurrentContent(NoteContent content)
+	{
+		model = content;
+		((NoteContent)model).setText(content.getText());
 	}
 }
