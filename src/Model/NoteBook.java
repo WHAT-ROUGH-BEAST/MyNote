@@ -21,7 +21,7 @@ public class NoteBook extends Model
 
 	public ArrayList<Note> getNotes()
 	{
-		return notes;
+		return new ArrayList<Note>(notes);
 	}
 	
 	// setter
@@ -34,7 +34,7 @@ public class NoteBook extends Model
 	public void setNotes(ArrayList<Note> notes)
 	{
 		observer.firePropertyChange("new notes", null, notes);
-		this.notes = notes;
+		this.notes = new ArrayList<Note>(notes);
 	}
 
 	@Override
@@ -47,5 +47,14 @@ public class NoteBook extends Model
 	public void removePropertyChangeListener(PropertyChangeListener listener)
 	{
 		observer.removePropertyChangeListener(listener);
+	}
+
+	@Override
+	public NoteBook clone()
+	{
+		NoteBook clone = new NoteBook();
+		clone.setName(getName());
+		clone.setNotes(getNotes());
+		return clone;
 	}
 }

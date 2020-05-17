@@ -24,8 +24,8 @@ import javafx.scene.control.TextInputDialog;
 
 interface NoteViewInterface
 {
-	void setCurrentNoteBook(User currentUser);
-	void createNewNote();
+	void setCurrentUser(User currentUser);
+	void updateNote(Note note);
 }
 
 public class NoteView extends View implements CurrentNoteListener, NoteViewInterface
@@ -40,7 +40,7 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 	// 用于控制editor以及notebook区域
 	@FXML private EditorView editorviewController;
 	@FXML private AllBookView allbookviewController;
-
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
@@ -75,10 +75,17 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 			editorviewController.setCurrentContent((NoteContent)evt.getNewValue());
 			break;
 		case "new title":
-			titleText.setText(((String)evt.getNewValue()).toString());
+			try
+			{
+				titleText.setText(((String)evt.getNewValue()).toString());
+			}
+			catch (NullPointerException e)
+			{
+				titleText.setText("");
+			}
 			break;
 		case "choosedNoteChanged":
-			setCurrentNote((Note)evt.getNewValue());
+			updateNote((Note)evt.getNewValue());
 			break;
 		case "noteBookNamesChanged":
 			noteBookChooser.getItems().clear();
@@ -104,20 +111,16 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 		return builder.toString();
 	}
 	
-	private void setCurrentNote(Note choosedNote)
-	{
+	@Override
+	public void updateNote(Note choosedNote)
+	{	
 		if (null == choosedNote)
 			return;
 		
-		String labels = null;
-		if (null != choosedNote.getLabels())
-			labels = getLabelsText(choosedNote.getLabels());
-	
-		((NoteController)controller).updateNote(
-				choosedNote.getTitle(),
-				labels,
-				getCalendarStr(choosedNote.getAlert()),
-				choosedNote.getContent());
+		model.removePropertyChangeListener(this);
+		model = choosedNote.clone();
+		model.addPropertyChangeListener(this);
+		((NoteController)controller).setCurrentNote(model);
 		
 		// 更新视图
 		editorviewController.setCurrentContent(choosedNote.getContent());
@@ -141,24 +144,29 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 	@FXML
 	private void doneButtonPressAction()
 	{
-		// 保存笔记内容
+		// 设置model内容
 		((NoteController)controller).updateNote(
 				titleText.getText(), 
 				labelText.getText(), 
 				remindTimeText.getText(),
-				editorviewController.updateContent());
+				editorviewController.updateContent(false));
 		
 		// 通知对应的notebook添加本note
-		allbookviewController.addNoteToBook((Note)model, noteBookChoosed);
+		allbookviewController.addNoteToBook(((Note)model).clone(), noteBookChoosed);
 	}
 	
 	@FXML
 	private void deleteButtonPressAction()
 	{
+		// 设置model内容
+		((NoteController)controller).updateNote("", "", "", 
+				editorviewController.updateContent(true));
+		
 		// 通知对应的notebook删除本note
 		allbookviewController.removeNoteFromBook(((Note)model).getId(), noteBookChoosed);
 	}
 	
+	// TODO : 通知allbookview的提醒列表改变
 	@FXML
 	private void remindButtonPressAction()
 	{
@@ -205,22 +213,9 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 	}
 
 	@Override
-	public void setCurrentNoteBook(User currentUser)
+	public void setCurrentUser(User currentUser)
 	{
-		allbookviewController.setCurrentNoteBook(currentUser);
+		allbookviewController.setCurrentUser(currentUser);
 	}
 
-	@Override
-	public void createNewNote()
-	{
-		model = new Note();
-		model.initialize();
-		((NoteController)controller).setCurrentNote((Note)model);
-		
-		NoteContent content = new NoteContent();
-		content.initialize();
-		
-		((Note)model).setContent(content);
-		setCurrentNote((Note)model);
-	}
 }

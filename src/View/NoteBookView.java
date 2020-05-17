@@ -21,7 +21,7 @@ import javafx.util.Callback;
 
 interface NoteListViewInterface
 {
-	void addNote(Note note);
+	NoteBook addNote(Note note);
 	void removeNote(int id);
 	void setCurrentNoteBook(NoteBook noteBookChoosed);
 	void setCurrentNoteListener(View ListListener);
@@ -108,9 +108,9 @@ public class NoteBookView extends View implements NoteListViewInterface
 	}
 
 	@Override
-	public void addNote(Note note)
+	public NoteBook addNote(final Note note)
 	{
-		((NoteBookController)controller).addNote(note);
+		return ((NoteBookController)controller).addNote(note);
 	}
 
 	@Override
@@ -119,17 +119,15 @@ public class NoteBookView extends View implements NoteListViewInterface
 		((NoteBookController)controller).removeNote(id);
 	}
 
-	public void setCurrentNoteBook(NoteBook noteBookChoosed)
+	public void setCurrentNoteBook(final NoteBook noteBookChoosed)
 	{
 		if (noteBookChoosed == model)
 			return;
 		
-		// vc中彻底更换list区域的model
 		model.removePropertyChangeListener(this);
-		
-		model = noteBookChoosed;
-		((NoteBookController)controller).setCurrentNoteBook(noteBookChoosed);
+		model = noteBookChoosed.clone();
 		model.addPropertyChangeListener(this);
+		((NoteBookController)controller).setCurrentNoteBook(model);
 	}
 
 	@Override

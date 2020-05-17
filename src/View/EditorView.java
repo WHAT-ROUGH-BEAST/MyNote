@@ -29,7 +29,7 @@ import netscape.javascript.JSException;
 
 interface EditorViewInterface
 {
-	NoteContent updateContent();
+	NoteContent updateContent(boolean clear);
 	void setCurrentContent(NoteContent content);
 }
 
@@ -72,18 +72,25 @@ public class EditorView extends View implements EditorViewInterface
 	
 	// 给noteview一个接口
 	@Override
-	public NoteContent updateContent()
+	public NoteContent updateContent(boolean clear)
 	{
 		// 点击确认按钮之后，更新内容
-		((Editor)controller).updateText(htmlEditor.getHtmlText());
+		if (clear)
+			((Editor)controller).updateText("");
+		else
+			((Editor)controller).updateText(htmlEditor.getHtmlText());
+		
 		return (NoteContent) this.model;
 	}
 	
 	@Override
 	public void setCurrentContent(NoteContent content)
 	{
-		model = content;
-		((Editor)controller).setCurrentContent(content);
+		model.removePropertyChangeListener(this);
+		model = content.clone();
+		model.addPropertyChangeListener(this);
+		
+		((Editor)controller).setCurrentContent(model);
 	}
 	
 	private void addExtraButton()

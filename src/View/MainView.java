@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 
 import Controller.Editor;
 import Controller.UserController;
+import Model.Note;
 import Model.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -27,7 +28,7 @@ public class MainView extends View
 		model.addPropertyChangeListener(this);
 		
 		// …Ë÷√”√ªß
-		noteviewController.setCurrentNoteBook((User)model);
+		noteviewController.setCurrentUser((User)model);
 	}
 	
 	@Override
@@ -40,7 +41,9 @@ public class MainView extends View
 	@FXML
 	private void newButtonPressAction()
 	{
-		noteviewController.createNewNote();
+		Note newNote = new Note();
+		newNote.initialize();
+		noteviewController.updateNote(newNote);
 	}
 	
 	@FXML 

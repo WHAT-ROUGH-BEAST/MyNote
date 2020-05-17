@@ -3,6 +3,7 @@ package Controller;
 import java.util.*;
 
 import Model.Model;
+import Model.Note;
 import Model.NoteBook;
 import Model.User;
 import View.View;
@@ -14,7 +15,8 @@ interface SignInInterface
 
 interface AllBookControllerInterface
 {
-	void setCurrentNoteBook(User currentUser);
+	void setCurrentUser(Model model);
+	void updateNoteBook(NoteBook updatedNoteBook);
 }
 
 public class UserController extends Controller 
@@ -26,10 +28,27 @@ public class UserController extends Controller
 		// model.initialize();
 	}
 
+	@Override
+	public void setCurrentUser(Model model)
+	{
+		this.model = model;
+		((User)model).setAccount(((User)model).getAccount());
+		((User)model).setNoteBooks(((User)model).getNoteBooks());
+		((User)model).setPassword(((User)model).getPassword());
+	}
 
 	@Override
-	public void setCurrentNoteBook(User currentUser)
+	public void updateNoteBook(NoteBook updatedNoteBook)
 	{
-		model = currentUser;
+		ArrayList<NoteBook> noteBooks = ((User)model).getNoteBooks();
+		for (NoteBook book : noteBooks)
+		{
+			if (book.getName().equals(updatedNoteBook.getName()))
+			{
+				noteBooks.remove(book);
+				noteBooks.add(updatedNoteBook);
+			}
+		}
+		((User)model).setNoteBooks(noteBooks);
 	}
 }

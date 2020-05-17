@@ -16,7 +16,12 @@ public class User extends Model
 		NoteBook defaultBook = new NoteBook();
 		defaultBook.initialize();
 		defaultBook.setName("defaultBook");
-		noteBooks = new ArrayList<NoteBook>(Arrays.asList(defaultBook));
+		
+		NoteBook Book1 = new NoteBook();
+		Book1.initialize();
+		Book1.setName("Book1");
+		
+		noteBooks = new ArrayList<NoteBook>(Arrays.asList(defaultBook, Book1));
 	}
 	
 	// getter
@@ -73,5 +78,11 @@ public class User extends Model
 	public void removePropertyChangeListener(PropertyChangeListener listener)
 	{
 		observer.removePropertyChangeListener(listener);
+	}
+
+	@Override
+	public User clone()
+	{
+		throw new RuntimeException("can't clone anyone's data");
 	}
 }

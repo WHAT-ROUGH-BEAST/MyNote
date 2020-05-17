@@ -11,7 +11,7 @@ interface NoteControllerInterface
 {
 	// 更新model
 	void updateNote(String title, String labels, String date, NoteContent noteContent);
-	void setCurrentNote(Note currentNote);
+	void setCurrentNote(Model model);
 }
 
 public class NoteController extends Controller implements NoteControllerInterface
@@ -38,7 +38,6 @@ public class NoteController extends Controller implements NoteControllerInterfac
 		
 		// date
 		Calendar cal;
-		System.out.println(date.split("/").length);
 		if (null == date || date.equals(""))
 			cal = null;
 		else
@@ -57,12 +56,13 @@ public class NoteController extends Controller implements NoteControllerInterfac
 	}
 
 	@Override
-	public void setCurrentNote(Note currentNote)
+	public void setCurrentNote(Model model)
 	{
-		// 问题所在
-		model = currentNote;
-		((Note)model).setAlert(currentNote.getAlert());
-		((Note)model).setLabels(currentNote.getLabels());
-		((Note)model).setTitle(currentNote.getTitle());
+		this.model = model;
+		
+		((Note)model).setTitle(((Note)model).getTitle());
+		((Note)model).setLabels(((Note)model).getLabels());
+		((Note)model).setAlert(((Note)model).getAlert());
+		((Note)model).setContent(((Note)model).getContent());
 	}
 }

@@ -9,9 +9,9 @@ import View.View;
 
 interface NoteListControllerInterface
 {
-	void addNote(Note note);
+	NoteBook addNote(Note note);
 	void removeNote(int id);
-	void setCurrentNoteBook(NoteBook noteBookChoosed);
+	void setCurrentNoteBook(Model model);
 }
 
 public class NoteBookController extends Controller implements NoteListControllerInterface
@@ -24,7 +24,7 @@ public class NoteBookController extends Controller implements NoteListController
 	}
 
 	@Override
-	public void addNote(Note note)
+	public NoteBook addNote(final Note note)
 	{
 		if (null == note)
 			throw new RuntimeException();
@@ -36,14 +36,15 @@ public class NoteBookController extends Controller implements NoteListController
 		{
 			if (n.getId() == note.getId())
 			{
-				n = note;
+				n = note.clone();
 				((NoteBook)model).setNotes(notes);
-				return;
+				return (NoteBook)model.clone();
 			}
 		}
 		
 		notes.add(note);
 		((NoteBook)model).setNotes(notes);
+		return (NoteBook)model.clone();
 	}
 
 	@Override
@@ -64,9 +65,11 @@ public class NoteBookController extends Controller implements NoteListController
 		throw new RuntimeException("can't find such note");
 	}
 
-	// TODO : ¸Ä±älist
-	public void setCurrentNoteBook(NoteBook noteBookChoosed)
+	@Override
+	public void setCurrentNoteBook(Model model)
 	{
-		model = noteBookChoosed;
+		this.model = model;
+		((NoteBook)model).setName(((NoteBook)model).getName());
+		((NoteBook)model).setNotes(((NoteBook)model).getNotes());
 	}
 }

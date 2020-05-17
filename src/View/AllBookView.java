@@ -25,7 +25,7 @@ interface AllBookViewInterface
 	void setCurrentNoteListener(View Listlistener);
 	ArrayList<String> getUserNoteBookNames();
 	void setNoteBookNameListener(View listener);
-	void setCurrentNoteBook(User currentUser);
+	void setCurrentUser(User currentUser);
 }
 
 public class AllBookView extends View implements AllBookViewInterface
@@ -41,8 +41,6 @@ public class AllBookView extends View implements AllBookViewInterface
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		// TODO : new user有问题，应该和登录的user保持一致，
-		// 但是问题不大，到时候完全复制就可
 		model = new User();
 		model.initialize();
 		controller = new UserController(model, this);
@@ -60,18 +58,19 @@ public class AllBookView extends View implements AllBookViewInterface
 		
 		ArrayList<String> noteBookNames = getUserNoteBookNames();
 		noteBookChooser.setItems(FXCollections.observableArrayList(noteBookNames));
-		noteBookChooser.scaleXProperty().addListener(new ChangeListener<Number>() { 
-			@Override
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2)
-			{
-				noteBookChoosed = noteBookNames.get(arg1.intValue());
-				for (NoteBook noteBook : ((User)model).getNoteBooks())
-				{
-					if (noteBook.getName().equals(noteBookChoosed))
-						notelistviewController.setCurrentNoteBook(noteBook);
-				}
-			} 
-        }); 
+		
+//		noteBookChooser.scaleXProperty().addListener(new ChangeListener<Number>() { 
+//			@Override
+//			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2)
+//			{
+//				noteBookChoosed = noteBookNames.get(arg1.intValue());
+//				for (NoteBook noteBook : ((User)model).getNoteBooks())
+//				{
+//					if (noteBook.getName().equals(noteBookChoosed))
+//						notelistviewController.setCurrentNoteBook(noteBook);
+//				}
+//			} 
+//        }); 
 	}
 	
 	@Override
@@ -82,16 +81,22 @@ public class AllBookView extends View implements AllBookViewInterface
 		{
 		case "new noteBooks":
 			noteBookChooser.getItems().clear();
-			noteBookChooser.getItems().addAll((ArrayList<String>)evt.getNewValue());
+			try
+			{
+				noteBookChooser.getItems().addAll((ArrayList<String>)evt.getNewValue());
+			}
+			catch (NullPointerException e)
+			{
+				// noteBookChooser为空
+			}
 			break;
 		default:
 			break;
 		}
 	}
 
-	// list的notebook与user中的notebook已同步
 	@Override
-	public void addNoteToBook(Note note, String noteBookChoosed)
+	public void addNoteToBook(final Note note, String noteBookChoosed)
 	{
 		final User thisUser= (User)model;
 		// 找到本笔记本
@@ -100,7 +105,9 @@ public class AllBookView extends View implements AllBookViewInterface
 			if (nb.getName().equals(noteBookChoosed))
 			{
 				notelistviewController.setCurrentNoteBook(nb);
-				notelistviewController.addNote(note);
+				NoteBook updatedNoteBook = notelistviewController.addNote(note);
+				
+				((UserController)controller).updateNoteBook(updatedNoteBook);
 				return;
 			}
 		}
@@ -153,15 +160,15 @@ public class AllBookView extends View implements AllBookViewInterface
 	}
 
 	@Override
-	public void setCurrentNoteBook(User currentUser)
+	public void setCurrentUser(final User currentUser)
 	{
 		if (model == currentUser)
 			return;
 		
 		model.removePropertyChangeListener(this);
-		
 		model = currentUser;
-		((UserController)controller).setCurrentNoteBook(currentUser);
 		model.addPropertyChangeListener(this);
+		((UserController)controller).setCurrentUser(model);
+		// TODO : 改变视图 -- choiceBox
 	}
 }

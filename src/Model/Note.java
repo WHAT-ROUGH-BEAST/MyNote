@@ -10,7 +10,7 @@ public class Note extends Model
 {	
 	// 同一个笔记本下的笔记允许同名，所以用id来识别
 	private static int cnt = 1;
-	private final int id = cnt ++;	
+	private int id = cnt ++;	
 	private String title;
 	private ArrayList<String> labels; 
 	private Calendar alert;
@@ -22,7 +22,8 @@ public class Note extends Model
 		// TODO Auto-generated method stub
 		labels = new ArrayList<String>();
 		alert = null;
-		noteContent = null;
+		noteContent = new NoteContent();
+		noteContent.initialize();
 	}
 	
 	// getter
@@ -45,7 +46,15 @@ public class Note extends Model
 	
 	public Calendar getAlert()
 	{
-		return alert;
+		try
+		{
+			return (Calendar) alert.clone();
+		}
+		catch (NullPointerException e)
+		{
+			return null;
+		}
+		
 	}
 	
 	public NoteContent getContent()
@@ -72,7 +81,15 @@ public class Note extends Model
 	public void setAlert(final Calendar alert)
 	{
 		observer.firePropertyChange("new alert", null, alert);
-		this.alert = alert;
+		try
+		{
+			this.alert = (Calendar) alert.clone();
+		}
+		catch (NullPointerException e)
+		{
+			this.alert = null;
+		}
+		
 	}
 	
 	public void setContent(final NoteContent content)
@@ -81,7 +98,7 @@ public class Note extends Model
 			throw new RuntimeException();
 		
 		observer.firePropertyChange("new content", null, content);
-		this.noteContent = content;
+		this.noteContent = content.clone();
 	}
 	
 	public void setTitle(String title)
@@ -101,5 +118,17 @@ public class Note extends Model
 	public void removePropertyChangeListener(PropertyChangeListener listener)
 	{
 		observer.removePropertyChangeListener(listener);
+	}
+
+	@Override
+	public Note clone()
+	{
+		Note clone = new Note();
+		clone.id = id;
+		clone.setAlert(getAlert());
+		clone.setContent(getContent());
+		clone.setLabels(getLabels());
+		clone.setTitle(getTitle());
+		return clone;
 	}
 }

@@ -16,7 +16,7 @@ interface EditorInterface
 	void updateText(String text);
 	void downloadFile();
 	void playAudio();
-	void setCurrentContent(NoteContent content);
+	void setCurrentContent(Model model);
 }
 
 public class Editor extends Controller implements EditorInterface
@@ -75,9 +75,9 @@ public class Editor extends Controller implements EditorInterface
 	}
 
 	@Override
-	public void setCurrentContent(NoteContent content)
+	public void setCurrentContent(Model model)
 	{
-		model = content;
-		((NoteContent)model).setText(content.getText());
+		this.model = model;
+		((NoteContent)model).setText(((NoteContent)model).getText());
 	}
 }

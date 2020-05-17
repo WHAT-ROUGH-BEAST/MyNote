@@ -7,7 +7,7 @@ import java.util.*;
 
 import Controller.IOOperator;
 
-public class NoteContent extends Model implements Cloneable
+public class NoteContent extends Model
 {
 	// text甚至能直接存图片，因为现在图片都是base64
 	private String text;
@@ -79,12 +79,12 @@ public class NoteContent extends Model implements Cloneable
 	@Override
 	public NoteContent clone()
 	{
-		NoteContent nc = new NoteContent();
-		nc.text = this.text;
-		nc.observer = this.observer;
-		nc.attachs = new ArrayList<Attachment>(attachs);
-		nc.audios = new ArrayList<Audio>(this.audios);
-		return nc;
+		NoteContent clone = new NoteContent();
+		clone.initialize();
+		clone.setText(getText());
+		clone.attachs = attachs;
+		clone.audios = audios;
+		return clone;
 	}
 }
 
