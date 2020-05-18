@@ -110,8 +110,8 @@ public class EditorView extends View implements EditorViewInterface
 	{
 		try
 		{
-        	String base64data = IOOperator.ChooseFile(htmlEditor.getScene().getWindow(), actionType);
-        	
+        	String base64data = IOOperator.importDataFile(
+        			IOOperator.ChooseFile(htmlEditor.getScene().getWindow(), actionType));        	
 			switch(actionType)
 			{
 				case "Img":

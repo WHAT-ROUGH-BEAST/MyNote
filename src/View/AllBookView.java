@@ -79,7 +79,6 @@ public class AllBookView extends View implements AllBookViewInterface
 	@Override
 	public void propertyChange(PropertyChangeEvent evt)
 	{
-		// TODO Auto-generated method stub
 		switch (evt.getPropertyName())
 		{
 		case "new noteBooks":
@@ -97,7 +96,7 @@ public class AllBookView extends View implements AllBookViewInterface
 	@Override
 	public void addNoteToBook(Note note, String noteBookName)
 	{
-		final User thisUser= (User)model;
+		User thisUser= (User)model;
 		// 找到本笔记本
 		for (NoteBook nb : thisUser.getNoteBooks())
 		{
@@ -162,14 +161,15 @@ public class AllBookView extends View implements AllBookViewInterface
 		return names;
 	}
 
+	// 供noteview监听笔记本的增减
 	@Override
 	public void setNoteBookNameListener(View listener)
 	{
-		model.addPropertyChangeListener(listener);
+		((UserController)controller).setNoteBookNameListener(listener);
 	}
 
 	@Override
-	public void setCurrentUser(final User currentUser)
+	public void setCurrentUser(User currentUser)
 	{
 		if (model == currentUser)
 			return;

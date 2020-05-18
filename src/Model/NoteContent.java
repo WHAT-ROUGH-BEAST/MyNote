@@ -2,6 +2,7 @@ package Model;
 
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.*;
 

@@ -1,10 +1,15 @@
 package Model;
 
 import java.beans.PropertyChangeListener;
+import java.io.Serializable;
 import java.util.*;
 
-public class User extends Model
+public class User extends Model implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3970064337768928245L;
 	private String account;
 	private String password;
 	private ArrayList<NoteBook> noteBooks;

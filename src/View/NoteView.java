@@ -26,6 +26,7 @@ interface NoteViewInterface
 {
 	void setCurrentUser(User currentUser);
 	void updateNote(Note note);
+	Note getCurrentNote();
 }
 
 public class NoteView extends View implements CurrentNoteListener, NoteViewInterface
@@ -90,11 +91,10 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 			}
 			break;
 		case "new noteBooks":
-			updateNote((Note)evt.getNewValue());
-			break;
-		case "noteBookNamesChanged":
+			String chooseHelper = noteBookChooser.getValue();
 			noteBookChooser.getItems().clear();
 			noteBookChooser.getItems().addAll((ArrayList<String>)evt.getNewValue());
+			noteBookChooser.setValue(chooseHelper);
 			break;
 		case "listChoosedNoteChanged":
 			updateNote((Note)evt.getNewValue());
@@ -215,15 +215,23 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
         }); 
 	}
 	
+	
+	// ¶ÔlistµÄ¼àÌý
 	private void setCurrentNoteListener(View Listlistner)
 	{
 		allbookviewController.setCurrentNoteListener(Listlistner);
 	}
-
+	
 	@Override
 	public void setCurrentUser(User currentUser)
 	{
 		allbookviewController.setCurrentUser(currentUser);
+	}
+
+	@Override
+	public Note getCurrentNote()
+	{
+		return (Note)model.clone();
 	}
 
 }

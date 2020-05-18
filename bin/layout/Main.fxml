@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="744.0" prefWidth="1112.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MainView">
+<VBox fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="744.0" prefWidth="1112.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MainView">
    <children>
       <MenuBar>
         <menus>
@@ -32,16 +32,11 @@
                <children>
                   <AnchorPane prefHeight="713.0" prefWidth="111.0">
                      <children>
-                        <Button fx:id="newButton" layoutX="6.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="new" 
-                        		onAction="#newButtonPressAction"/>
-                        <Button fx:id="importButton" layoutX="6.0" layoutY="88.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="import" 
-                        		onAction="#importButtonPressAction"/>
-                        <Button fx:id="notebookButton" layoutX="6.0" layoutY="173.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="notebook" 
-                        		onAction="#notebookButtonPressAction"/>
-                        <Button fx:id="exportButton" layoutX="6.0" layoutY="265.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="export" 
-                        		onAction="#exportButtonPressAction"/>
-                        <Button fx:id="searchButton" layoutX="6.0" layoutY="375.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="search" 
-                        		onAction="#searchButtonPressAction"/>
+                        <Button fx:id="newButton" layoutX="6.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="new" onAction="#newButtonPressAction"/>
+                        <Button fx:id="importButton" layoutX="6.0" layoutY="88.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="import" onAction="#importButtonPressAction"/>
+                        <Button fx:id="notebookButton" layoutX="6.0" layoutY="173.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="notebook" onAction="#notebookButtonPressAction"/>
+                        <Button fx:id="exportButton" layoutX="6.0" layoutY="265.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="export" onAction="#exportButtonPressAction"/>
+                        <Button fx:id="searchButton" layoutX="6.0" layoutY="375.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="99.0" text="search" onAction="#searchButtonPressAction"/>
                      </children>
                   </AnchorPane>
                </children>
