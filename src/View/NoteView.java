@@ -210,7 +210,7 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 			@Override
 			public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2)
 			{
-				setNoteBookChoosed(arg2);
+				setNoteBookChoosed((arg2 == null)?arg0.getValue():arg2);
 			} 
         }); 
 	}

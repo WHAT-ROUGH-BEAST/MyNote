@@ -24,7 +24,7 @@ public class NoteBookController extends Controller implements NoteListController
 	}
 
 	@Override
-	public NoteBook addNote(final Note note)
+	public NoteBook addNote(Note note)
 	{
 		if (null == note)
 			throw new RuntimeException();

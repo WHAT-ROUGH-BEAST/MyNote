@@ -106,7 +106,7 @@ public class NoteBookView extends View implements NoteListViewInterface
 	}
 
 	@Override
-	public NoteBook addNote(final Note note)
+	public NoteBook addNote(Note note)
 	{
 		return ((NoteBookController)controller).addNote(note);
 	}

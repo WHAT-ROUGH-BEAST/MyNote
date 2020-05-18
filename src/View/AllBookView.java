@@ -12,11 +12,13 @@ import View.ListView.RemindItem;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 
 interface AllBookViewInterface
@@ -34,10 +36,8 @@ public class AllBookView extends View implements AllBookViewInterface
 	@FXML private ListView<RemindItem> remindList;
 	@FXML private TextField searchText;
 	@FXML private Button searchButton;
-	@FXML private ChoiceBox<String> ListChooser;
-	// 记录当前选中的笔记本以便控制chooser视图
-	private String choosedNoteBook;
-
+	@FXML private ChoiceBox<String> listChooser;
+	@FXML private Button notifyListButton;
 	@FXML private NoteBookView notelistviewController;
 	
 	@Override
@@ -53,32 +53,27 @@ public class AllBookView extends View implements AllBookViewInterface
 		initListChooser();
 	}
 	
-	private void setChoosedNoteBook(String noteBookName)
-	{
-		choosedNoteBook = noteBookName;
-	}
-	
 	private void initListChooser()
 	{
-		ArrayList<String> noteBookNames = getUserNoteBookNames();
-		ListChooser.setItems(FXCollections.observableArrayList(noteBookNames));
-		ListChooser.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() { 
+		listChooser.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() { 
 			@Override
 			public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2)
 			{
-				setChoosedNoteBook(arg2);
-				
-				for (NoteBook book : ((User)model).getNoteBooks())
-				{
-					if (book.getName().equals(choosedNoteBook))
-						notelistviewController.setCurrentNoteBook(book.clone());
-					return;
-				}
+				notifyListButton.setText((arg2 == null)?arg0.getValue():arg2);
 			} 
         }); 
-		
-		setChoosedNoteBook("defaultBook");
-		ListChooser.setValue(choosedNoteBook);
+	}
+	
+	@FXML
+	private void notifyListButtonPressAction()
+	{
+		for (NoteBook book : ((User)model).getNoteBooks())
+		{
+			if (book.getName().equals(notifyListButton.getText()))
+			{
+				notelistviewController.setCurrentNoteBook(book);
+			}
+		}
 	}
 
 	@Override
@@ -88,16 +83,11 @@ public class AllBookView extends View implements AllBookViewInterface
 		switch (evt.getPropertyName())
 		{
 		case "new noteBooks":
-			ListChooser.getItems().clear();
-			try
-			{
-				ListChooser.getItems().addAll((ArrayList<String>)evt.getNewValue());
-				ListChooser.setValue(choosedNoteBook);
-			}
-			catch (NullPointerException e)
-			{
-				e.printStackTrace();
-			}
+			String chooseHelper = notifyListButton.getText();
+			listChooser.getItems().clear();
+			listChooser.getItems().addAll((ArrayList<String>)evt.getNewValue());
+			// 避免choicebox改变后丢失button text
+			notifyListButton.setText(chooseHelper);
 			break;
 		default:
 			break;
@@ -117,7 +107,7 @@ public class AllBookView extends View implements AllBookViewInterface
 				NoteBook updatedNoteBook = notelistviewController.addNote(note);
 				
 				// 改变chooser视图
-				setChoosedNoteBook(noteBookName);
+				notifyListButton.setText(noteBookName);
 				
 				// user本身添加
 				((UserController)controller).updateNoteBook(updatedNoteBook);
@@ -137,11 +127,11 @@ public class AllBookView extends View implements AllBookViewInterface
 		{
 			if (nb.getName().equals(noteBookName))
 			{
-				notelistviewController.setCurrentNoteBook(nb);
+//				notelistviewController.setCurrentNoteBook(nb);
 				NoteBook updatedNoteBook = notelistviewController.removeNote(id);
 				
 				// 改变chooser视图
-				setChoosedNoteBook(noteBookName);
+				notifyListButton.setText(noteBookName);
 				
 				// user本身添加
 				((UserController)controller).updateNoteBook(updatedNoteBook);
@@ -188,6 +178,5 @@ public class AllBookView extends View implements AllBookViewInterface
 		model = currentUser;
 		model.addPropertyChangeListener(this);
 		((UserController)controller).setCurrentUser(model);
-		// TODO : 改变视图 -- choiceBox
 	}
 }
