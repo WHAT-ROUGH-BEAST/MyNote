@@ -22,7 +22,7 @@ import javafx.util.Callback;
 interface NoteListViewInterface
 {
 	NoteBook addNote(Note note);
-	void removeNote(int id);
+	NoteBook removeNote(int id);
 	void setCurrentNoteBook(NoteBook noteBookChoosed);
 	void setCurrentNoteListener(View ListListener);
 }
@@ -69,12 +69,10 @@ public class NoteBookView extends View implements NoteListViewInterface
 		
 		String noteNameId[] = noteList.getSelectionModel().getSelectedItem().split(" ");
 
-		Note choosedNote = null;
-		// TODO: 能不能直接给引用？
-		choosedNote = findNoteById(Integer.parseInt(noteNameId[0]));
+		Note choosedNote = findNoteById(Integer.parseInt(noteNameId[0]));
 		
 		// 获得点击的note
-		listObserver.firePropertyChange("choosedNoteChanged", null, choosedNote);
+		listObserver.firePropertyChange("listChoosedNoteChanged", null, choosedNote);
 	}
 	
 	@Override
@@ -101,7 +99,7 @@ public class NoteBookView extends View implements NoteListViewInterface
 		{
 			if (n.getId() == id)
 			{
-				return n;
+				return n.clone();
 			}
 		}
 		throw new RuntimeException("can't find Note with id: "+id);
@@ -114,18 +112,15 @@ public class NoteBookView extends View implements NoteListViewInterface
 	}
 
 	@Override
-	public void removeNote(int id)
+	public NoteBook removeNote(int id)
 	{
-		((NoteBookController)controller).removeNote(id);
+		return ((NoteBookController)controller).removeNote(id);
 	}
 
-	public void setCurrentNoteBook(final NoteBook noteBookChoosed)
-	{
-		if (noteBookChoosed == model)
-			return;
-		
+	public void setCurrentNoteBook(NoteBook noteBook)
+	{	
 		model.removePropertyChangeListener(this);
-		model = noteBookChoosed.clone();
+		model = noteBook.clone();
 		model.addPropertyChangeListener(this);
 		((NoteBookController)controller).setCurrentNoteBook(model);
 	}

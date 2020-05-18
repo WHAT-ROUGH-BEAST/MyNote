@@ -10,7 +10,7 @@ import View.View;
 interface NoteListControllerInterface
 {
 	NoteBook addNote(Note note);
-	void removeNote(int id);
+	NoteBook removeNote(int id);
 	void setCurrentNoteBook(Model model);
 }
 
@@ -36,7 +36,9 @@ public class NoteBookController extends Controller implements NoteListController
 		{
 			if (n.getId() == note.getId())
 			{
-				n = note.clone();
+//				n = note.clone();
+				notes.remove(n);
+				notes.add(note);
 				((NoteBook)model).setNotes(notes);
 				return (NoteBook)model.clone();
 			}
@@ -48,7 +50,7 @@ public class NoteBookController extends Controller implements NoteListController
 	}
 
 	@Override
-	public void removeNote(int id)
+	public NoteBook removeNote(int id)
 	{
 		ArrayList<Note> notes = (ArrayList<Note>) ((NoteBook)model).getNotes();
 		
@@ -58,7 +60,7 @@ public class NoteBookController extends Controller implements NoteListController
 			{
 				notes.remove(n);
 				((NoteBook)model).setNotes(notes);
-				return;
+				return ((NoteBook)model).clone();
 			}
 		}
 		

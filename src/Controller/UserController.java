@@ -47,6 +47,7 @@ public class UserController extends Controller
 			{
 				noteBooks.remove(book);
 				noteBooks.add(updatedNoteBook);
+				break;
 			}
 		}
 		((User)model).setNoteBooks(noteBooks);

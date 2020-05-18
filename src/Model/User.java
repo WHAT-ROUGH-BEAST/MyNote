@@ -61,10 +61,10 @@ public class User extends Model
 		{
 			names.add(noteBook.getName());
 		}
-		observer.firePropertyChange("noteBookNamesChanged", null, names);
+//		observer.firePropertyChange("noteBookNamesChanged", null, names);
 		
-		// 
-		observer.firePropertyChange("new noteBooks", null, password);
+		// TODO:
+		observer.firePropertyChange("new noteBooks", null, names);
 		this.noteBooks = new ArrayList<NoteBook>(noteBooks);
 	}
 

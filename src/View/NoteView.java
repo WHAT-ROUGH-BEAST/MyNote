@@ -41,6 +41,11 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 	@FXML private EditorView editorviewController;
 	@FXML private AllBookView allbookviewController;
 	
+	private void setNoteBookChoosed(String noteBookName)
+	{
+		noteBookChoosed = noteBookName;
+	}
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
@@ -84,12 +89,15 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 				titleText.setText("");
 			}
 			break;
-		case "choosedNoteChanged":
+		case "new noteBooks":
 			updateNote((Note)evt.getNewValue());
 			break;
 		case "noteBookNamesChanged":
 			noteBookChooser.getItems().clear();
 			noteBookChooser.getItems().addAll((ArrayList<String>)evt.getNewValue());
+			break;
+		case "listChoosedNoteChanged":
+			updateNote((Note)evt.getNewValue());
 			break;
 		default:
 			break;
@@ -133,11 +141,6 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy/MM/dd");
 		String formatted = format1.format(cal.getTime());
 		return formatted.toString();
-	}
-	
-	private void setCurrentNoteListener(View Listlistner)
-	{
-		allbookviewController.setCurrentNoteListener(Listlistner);
 	}
 	
 	// 点击事件
@@ -195,7 +198,7 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 	
 	private void initNoteBookChooser()
 	{
-		noteBookChoosed = "defaultBook";
+		setNoteBookChoosed("defaultBook");
 		noteBookChooser.setValue(noteBookChoosed);
 		
 		// 读入笔记本名，并注册笔记本名的监听者
@@ -203,13 +206,18 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 		allbookviewController.setNoteBookNameListener(this);
 		
 		noteBookChooser.setItems(FXCollections.observableArrayList(noteBookNames));
-		noteBookChooser.scaleXProperty().addListener(new ChangeListener<Number>() { 
+		noteBookChooser.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() { 
 			@Override
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2)
+			public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2)
 			{
-				noteBookChoosed = noteBookNames.get(arg1.intValue());
+				setNoteBookChoosed(arg2);
 			} 
         }); 
+	}
+	
+	private void setCurrentNoteListener(View Listlistner)
+	{
+		allbookviewController.setCurrentNoteListener(Listlistner);
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
@@ -33,8 +34,9 @@ public class AllBookView extends View implements AllBookViewInterface
 	@FXML private ListView<RemindItem> remindList;
 	@FXML private TextField searchText;
 	@FXML private Button searchButton;
-	@FXML private ChoiceBox<String> noteBookChooser;
-	private String noteBookChoosed;
+	@FXML private ChoiceBox<String> ListChooser;
+	// 记录当前选中的笔记本以便控制chooser视图
+	private String choosedNoteBook;
 
 	@FXML private NoteBookView notelistviewController;
 	
@@ -48,31 +50,37 @@ public class AllBookView extends View implements AllBookViewInterface
 		
 		// TODO : 初始化组件
 		// initRemindList();
-		initNoteBookChooser();
+		initListChooser();
 	}
 	
-	private void initNoteBookChooser()
+	private void setChoosedNoteBook(String noteBookName)
 	{
-		noteBookChoosed = "defaultBook";
-		noteBookChooser.setValue(noteBookChoosed);
-		
-		ArrayList<String> noteBookNames = getUserNoteBookNames();
-		noteBookChooser.setItems(FXCollections.observableArrayList(noteBookNames));
-		
-//		noteBookChooser.scaleXProperty().addListener(new ChangeListener<Number>() { 
-//			@Override
-//			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2)
-//			{
-//				noteBookChoosed = noteBookNames.get(arg1.intValue());
-//				for (NoteBook noteBook : ((User)model).getNoteBooks())
-//				{
-//					if (noteBook.getName().equals(noteBookChoosed))
-//						notelistviewController.setCurrentNoteBook(noteBook);
-//				}
-//			} 
-//        }); 
+		choosedNoteBook = noteBookName;
 	}
 	
+	private void initListChooser()
+	{
+		ArrayList<String> noteBookNames = getUserNoteBookNames();
+		ListChooser.setItems(FXCollections.observableArrayList(noteBookNames));
+		ListChooser.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() { 
+			@Override
+			public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2)
+			{
+				setChoosedNoteBook(arg2);
+				
+				for (NoteBook book : ((User)model).getNoteBooks())
+				{
+					if (book.getName().equals(choosedNoteBook))
+						notelistviewController.setCurrentNoteBook(book.clone());
+					return;
+				}
+			} 
+        }); 
+		
+		setChoosedNoteBook("defaultBook");
+		ListChooser.setValue(choosedNoteBook);
+	}
+
 	@Override
 	public void propertyChange(PropertyChangeEvent evt)
 	{
@@ -80,14 +88,15 @@ public class AllBookView extends View implements AllBookViewInterface
 		switch (evt.getPropertyName())
 		{
 		case "new noteBooks":
-			noteBookChooser.getItems().clear();
+			ListChooser.getItems().clear();
 			try
 			{
-				noteBookChooser.getItems().addAll((ArrayList<String>)evt.getNewValue());
+				ListChooser.getItems().addAll((ArrayList<String>)evt.getNewValue());
+				ListChooser.setValue(choosedNoteBook);
 			}
 			catch (NullPointerException e)
 			{
-				// noteBookChooser为空
+				e.printStackTrace();
 			}
 			break;
 		default:
@@ -96,41 +105,51 @@ public class AllBookView extends View implements AllBookViewInterface
 	}
 
 	@Override
-	public void addNoteToBook(final Note note, String noteBookChoosed)
+	public void addNoteToBook(Note note, String noteBookName)
 	{
 		final User thisUser= (User)model;
 		// 找到本笔记本
 		for (NoteBook nb : thisUser.getNoteBooks())
 		{
-			if (nb.getName().equals(noteBookChoosed))
+			if (nb.getName().equals(noteBookName))
 			{
 				notelistviewController.setCurrentNoteBook(nb);
 				NoteBook updatedNoteBook = notelistviewController.addNote(note);
 				
+				// 改变chooser视图
+				setChoosedNoteBook(noteBookName);
+				
+				// user本身添加
 				((UserController)controller).updateNoteBook(updatedNoteBook);
 				return;
 			}
 		}
 		
-		throw new RuntimeException("can't find notebook named: \"" + noteBookChoosed + "\"");
+		throw new RuntimeException("can't find notebook named: \"" + noteBookName + "\"");
 	}
 
 	@Override
-	public void removeNoteFromBook(int id, String noteBookChoosed)
+	public void removeNoteFromBook(int id, String noteBookName)
 	{
 		final User thisUser= (User)model;
 		// 找到本笔记本
 		for (NoteBook nb : thisUser.getNoteBooks())
 		{
-			if (nb.getName().equals(noteBookChoosed))
+			if (nb.getName().equals(noteBookName))
 			{
 				notelistviewController.setCurrentNoteBook(nb);
-				notelistviewController.removeNote(id);
+				NoteBook updatedNoteBook = notelistviewController.removeNote(id);
+				
+				// 改变chooser视图
+				setChoosedNoteBook(noteBookName);
+				
+				// user本身添加
+				((UserController)controller).updateNoteBook(updatedNoteBook);
 				return;
 			}
 		}
 		
-		throw new RuntimeException("can't find notebook named: \"" + noteBookChoosed + "\"");
+		throw new RuntimeException("can't find notebook named: \"" + noteBookName + "\"");
 	}
 	
 

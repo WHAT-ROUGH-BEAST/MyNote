@@ -19,6 +19,7 @@ public class NoteContent extends Model
 	{
 		attachs = new ArrayList<Attachment>();
 		audios = new ArrayList<Audio>();
+		text = "";
 	}
 	
 	// getters
