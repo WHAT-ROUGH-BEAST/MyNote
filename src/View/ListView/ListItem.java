@@ -1,18 +1,18 @@
 package View.ListView;
 
+import Model.Note;
 import javafx.scene.control.ListCell;
 
-public class ListItem extends ListCell<String>
+public class ListItem extends ListCell<Note>
 {
     @Override
-    public void updateItem(String string, boolean empty)
+    public void updateItem(Note note, boolean empty)
     {
-        super.updateItem(string,empty);
-        if(string != null)
+        super.updateItem(note,empty);
+        if(note != null)
         {
-        	// Data是自定义的数据元素
             ItemView data = new ItemView();
-            data.setInfo(string);
+            data.setInfo(note);
             setGraphic(data.getBox());
         }
     }
