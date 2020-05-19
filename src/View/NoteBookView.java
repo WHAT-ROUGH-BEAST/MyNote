@@ -12,6 +12,7 @@ import Model.NoteBook;
 import Model.User;
 import View.ListView.ListItem;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
@@ -32,8 +33,7 @@ public class NoteBookView extends View implements NoteListViewInterface
 {
 	PropertyChangeSupport listObserver = new PropertyChangeSupport(this);
 	
-	// TODO : 后期改<Note>
-	@FXML private ListView<Note> noteList;
+	@FXML private ListView<String> noteList;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
@@ -50,18 +50,13 @@ public class NoteBookView extends View implements NoteListViewInterface
 
 	private void initNoteList()
 	{
-		noteList.setItems(FXCollections.observableArrayList(
-				((NoteBook)model).getNotes()));
-		noteList.setEditable(true);
+		ArrayList<String> names = new ArrayList<String>();
+		for (Note n : ((NoteBook)model).getNotes())
+		{
+			names.add(n.getId() + " " + n.getTitle());
+		}
 		
-		noteList.setCellFactory(new Callback<ListView<Note>, ListCell<Note>>(){
-
-			@Override
-			public ListCell<Note> call(ListView<Note> noteList) {
-				return new ListItem();
-			}
-		});	
-		
+		noteList.setItems(FXCollections.observableArrayList(names));
 	}
 	
 	@FXML
@@ -71,9 +66,9 @@ public class NoteBookView extends View implements NoteListViewInterface
 		if (null == noteList.getSelectionModel().getSelectedItem())
 			return;
 		
-		int noteNameId = noteList.getSelectionModel().getSelectedItem().getId();
+		String noteNameId[] = noteList.getSelectionModel().getSelectedItem().split(" ");
 
-		Note choosedNote = findNoteById(noteNameId);
+		Note choosedNote = findNoteById(Integer.parseInt(noteNameId[0]));
 		
 		// 获得点击的note
 		listObserver.firePropertyChange("listChoosedNoteChanged", null, choosedNote);
@@ -86,8 +81,13 @@ public class NoteBookView extends View implements NoteListViewInterface
 		switch (evt.getPropertyName())
 		{
 		case "new notes":
+			ArrayList<String> names = new ArrayList<String>();
+			for (Note n : ((ArrayList<Note>)evt.getNewValue()))
+			{
+				names.add(n.getId() + " " + n.getTitle());
+			}
 			noteList.getItems().clear();
-			noteList.getItems().addAll((ArrayList<Note>)evt.getNewValue());
+			noteList.getItems().addAll(names);
 			break;
 		}
 	}

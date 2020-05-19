@@ -8,7 +8,8 @@ import Controller.UserController;
 import Model.Note;
 import Model.NoteBook;
 import Model.User;
-import View.ListView.RemindItem;
+import View.ListView.ListItem;
+import View.RemindView.RemindItem;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -17,9 +18,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
 
 interface AllBookViewInterface
 {
@@ -33,7 +36,7 @@ interface AllBookViewInterface
 
 public class AllBookView extends View implements AllBookViewInterface
 {
-	@FXML private ListView<RemindItem> remindList;
+	@FXML private ListView<Note> remindList;
 	@FXML private TextField searchText;
 	@FXML private Button searchButton;
 	@FXML private ChoiceBox<String> listChooser;
@@ -49,7 +52,7 @@ public class AllBookView extends View implements AllBookViewInterface
 		model.addPropertyChangeListener(this);  
 		
 		// TODO : 初始化组件
-		// initRemindList();
+//		initRemindList();
 		initListChooser();
 	}
 	
@@ -62,6 +65,33 @@ public class AllBookView extends View implements AllBookViewInterface
 				notifyListButton.setText((arg2 == null)?arg0.getValue():arg2);
 			} 
         }); 
+	}
+	
+	private void initRemindList()
+	{
+		remindList.setItems(FXCollections.observableArrayList(getRemindItems()));
+		remindList.setEditable(true);
+		
+		remindList.setCellFactory(new Callback<ListView<Note>, ListCell<Note>>(){
+			@Override
+			public ListCell<Note> call(ListView<Note> List) {
+				return new RemindItem();
+			}
+		});	
+	}	
+	
+	private ArrayList<Note> getRemindItems()
+	{
+		ArrayList<Note> items = new ArrayList<Note>();
+		for (NoteBook book : ((User)model).getNoteBooks())
+		{
+			for (Note n : book.getNotes())
+			{
+				if (null != n.getAlert())
+					items.add(n.clone());
+			}
+		}
+		return items;
 	}
 	
 	@FXML
@@ -87,6 +117,9 @@ public class AllBookView extends View implements AllBookViewInterface
 			listChooser.getItems().addAll((ArrayList<String>)evt.getNewValue());
 			// 避免choicebox改变后丢失button text
 			notifyListButton.setText(chooseHelper);
+			
+			// reminds
+//			remindList.setItems(FXCollections.observableArrayList(getRemindItems()));
 			break;
 		default:
 			break;

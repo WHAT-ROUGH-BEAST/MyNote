@@ -7,7 +7,7 @@
 
 <VBox prefHeight="691.0" prefWidth="223.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.AllBookView">
    <children>
-      <VBox prefHeight="272.0" prefWidth="223.0">
+      <VBox prefHeight="252.0" prefWidth="226.0">
          <children>
             <ListView fx:id="remindList" prefHeight="182.0" prefWidth="223.0" />
             <AnchorPane prefHeight="67.0" prefWidth="225.0">

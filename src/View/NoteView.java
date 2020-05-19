@@ -27,6 +27,7 @@ interface NoteViewInterface
 	void setCurrentUser(User currentUser);
 	void updateNote(Note note);
 	Note getCurrentNote();
+	
 }
 
 public class NoteView extends View implements CurrentNoteListener, NoteViewInterface
@@ -233,5 +234,4 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 	{
 		return (Note)model.clone();
 	}
-
 }

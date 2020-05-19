@@ -18,17 +18,20 @@ public class ItemView
 	
 	public ItemView()
 	{
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/View/ListView/ListItem.fxml"));
-		
-		fxmlLoader.setController(this);
-		try
-        {
-            fxmlLoader.load();
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
+//		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/View/ListView/ListItem.fxml"));
+//		
+//		fxmlLoader.setController(this);
+//		try
+//        {
+//            fxmlLoader.load();
+//        }
+//        catch (IOException e)
+//        {
+//            throw new RuntimeException(e);
+//        }
+		label_1 = new Label();
+		label_2 = new Label();
+		vbox = new VBox(label_1, label_2);
 	}
 	
 	public void setInfo(Note note)
