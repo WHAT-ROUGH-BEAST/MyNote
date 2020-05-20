@@ -4,8 +4,10 @@ import Model.Note;
 
 public class Remind
 {
+	private boolean isDone;
 	private String bookName;
 	private Note note;
+	
 	public Remind(Note note, String bookName)
 	{
 		this.note = note;
@@ -25,5 +27,15 @@ public class Remind
 	public void setNote(Note note)
 	{
 		note = note.clone();
+	}
+	
+	public void setDone()
+	{
+		isDone = !isDone;
+	}
+	
+	public boolean ifDone()
+	{
+		return isDone;
 	}
 }

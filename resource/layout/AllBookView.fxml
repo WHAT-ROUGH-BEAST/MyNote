@@ -9,7 +9,7 @@
    <children>
       <VBox prefHeight="239.0" prefWidth="214.0">
          <children>
-            <ListView fx:id="remindList" onMouseClicked="#onRemindItemCheckAction" prefHeight="181.0" prefWidth="226.0" />
+            <ListView fx:id="remindList" prefHeight="181.0" prefWidth="226.0" />
             <AnchorPane prefHeight="76.0" prefWidth="226.0">
                <children>
                   <TextField fx:id="searchText" prefHeight="30.0" prefWidth="186.0" />

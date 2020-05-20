@@ -78,15 +78,6 @@ public class AllBookView extends View implements AllBookViewInterface
 			}
 		});	
 	}
-	// TODO : 点击了remindList项
-	@FXML
-	private void onRemindItemCheckAction()
-	{
-		if (null == remindList.getSelectionModel().getSelectedItem())
-			return;
-		
-		
-	}
 	
 	private ArrayList<Remind> getRemindItems()
 	{
@@ -126,10 +117,23 @@ public class AllBookView extends View implements AllBookViewInterface
 			// 避免choicebox改变后丢失button text
 			notifyListButton.setText(chooseHelper);
 			
-			// 不更新 reminds，视图独立于数据变化 + 深删除已打勾的事项
+			// remindList深删除已打勾的事项
+			removeDoneRemindItem();
 			break;
 		default:
 			break;
+		}
+	}
+	
+	private void removeDoneRemindItem()
+	{
+		for (Remind item : remindList.getItems())
+		{
+			if (item.ifDone())
+			{
+				addNoteToBook(item.getNote(), item.getBookName());
+				removeNoteFromBook(item.getNote().getId(), item.getBookName());
+			}
 		}
 	}
 

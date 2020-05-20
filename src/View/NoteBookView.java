@@ -34,7 +34,7 @@ public class NoteBookView extends View implements NoteListViewInterface
 	PropertyChangeSupport listObserver = new PropertyChangeSupport(this);
 	
 	@FXML private ListView<Note> noteList;
-	private ObservableList<Note> observableList;
+//	private ObservableList<Note> observableList;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
@@ -51,9 +51,7 @@ public class NoteBookView extends View implements NoteListViewInterface
 	
 	private void initNoteList()
 	{
-		observableList = FXCollections.observableArrayList(((NoteBook)model).getNotes());
-			
-		noteList.setItems(observableList);
+		noteList.setItems(FXCollections.observableArrayList(((NoteBook)model).getNotes()));
 		
 		noteList.setCellFactory(new Callback<ListView<Note>, ListCell<Note>>(){
 			@Override
@@ -84,8 +82,8 @@ public class NoteBookView extends View implements NoteListViewInterface
 		switch (evt.getPropertyName())
 		{
 		case "new notes":
-			observableList.clear();
-			observableList.addAll((ArrayList<Note>)evt.getNewValue());
+			noteList.getItems().clear();
+			noteList.getItems().addAll((ArrayList<Note>)evt.getNewValue());
 			break;
 		}
 	}

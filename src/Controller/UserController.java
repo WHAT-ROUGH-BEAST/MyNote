@@ -29,7 +29,6 @@ public class UserController extends Controller
 	public UserController(Model model, View view)
 	{
 		super(model, view);
-		// model.initialize();
 	}
 
 	@Override

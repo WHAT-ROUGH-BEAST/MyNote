@@ -19,10 +19,30 @@ public class RemindView
 	@FXML Label label;
 	
 	private Remind dataHolder;
+	private Calendar tempAlertHolder;
 	
 	private void setData(Remind data)
 	{
 		dataHolder = data;
+		tempAlertHolder = dataHolder.getNote().getAlert();
+	}
+	
+	@FXML
+	private void onSelectedAction()
+	{
+		if (dataHolder.ifDone())
+		{
+			dataHolder.getNote().setAlert(tempAlertHolder);
+			label.setText(dataHolder.getNote().getAlert().get(Calendar.YEAR)  + "/" 
+					+(dataHolder.getNote().getAlert().get(Calendar.MONTH) + 1) + "/"
+					+ dataHolder.getNote().getAlert().get(Calendar.DAY_OF_MONTH));
+		}
+		else
+		{
+			dataHolder.getNote().setAlert(null);
+			label.setText("done");
+		}
+		dataHolder.setDone();
 	}
 	
 	public RemindView()
