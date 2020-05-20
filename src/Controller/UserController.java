@@ -48,6 +48,9 @@ public class UserController extends Controller
 	@Override
 	public void updateNoteBook(NoteBook updatedNoteBook)
 	{
+		if (null == updatedNoteBook)
+			return;
+		
 		ArrayList<NoteBook> noteBooks = ((User)model).getNoteBooks();
 		for (NoteBook book : noteBooks)
 		{

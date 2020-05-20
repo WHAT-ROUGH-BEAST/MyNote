@@ -64,7 +64,8 @@ public class NoteBookController extends Controller implements NoteListController
 			}
 		}
 		
-		throw new RuntimeException("can't find such note");
+		return null;
+//		throw new RuntimeException("can't find such note");
 	}
 
 	@Override

@@ -33,7 +33,8 @@ public class NoteBookView extends View implements NoteListViewInterface
 {
 	PropertyChangeSupport listObserver = new PropertyChangeSupport(this);
 	
-	@FXML private ListView<String> noteList;
+	@FXML private ListView<Note> noteList;
+	private ObservableList<Note> observableList;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
@@ -47,16 +48,19 @@ public class NoteBookView extends View implements NoteListViewInterface
 		// 初始化listview
 		initNoteList();
 	}
-
+	
 	private void initNoteList()
 	{
-		ArrayList<String> names = new ArrayList<String>();
-		for (Note n : ((NoteBook)model).getNotes())
-		{
-			names.add(n.getId() + " " + n.getTitle());
-		}
+		observableList = FXCollections.observableArrayList(((NoteBook)model).getNotes());
+			
+		noteList.setItems(observableList);
 		
-		noteList.setItems(FXCollections.observableArrayList(names));
+		noteList.setCellFactory(new Callback<ListView<Note>, ListCell<Note>>(){
+			@Override
+			public ListCell<Note> call(ListView<Note> noteList) {
+				return new ListItem();
+			}
+		});	
 	}
 	
 	@FXML
@@ -66,12 +70,11 @@ public class NoteBookView extends View implements NoteListViewInterface
 		if (null == noteList.getSelectionModel().getSelectedItem())
 			return;
 		
-		String noteNameId[] = noteList.getSelectionModel().getSelectedItem().split(" ");
-
-		Note choosedNote = findNoteById(Integer.parseInt(noteNameId[0]));
+		int noteNameId = noteList.getSelectionModel().getSelectedItem().getId();
+		Note choosedNote = findNoteById(noteNameId);
 		
 		// 获得点击的note
-		listObserver.firePropertyChange("listChoosedNoteChanged", null, choosedNote);
+		listObserver.firePropertyChange("listChoosedNoteChanged", null, choosedNote.clone());
 	}
 	
 	@Override
@@ -81,13 +84,8 @@ public class NoteBookView extends View implements NoteListViewInterface
 		switch (evt.getPropertyName())
 		{
 		case "new notes":
-			ArrayList<String> names = new ArrayList<String>();
-			for (Note n : ((ArrayList<Note>)evt.getNewValue()))
-			{
-				names.add(n.getId() + " " + n.getTitle());
-			}
-			noteList.getItems().clear();
-			noteList.getItems().addAll(names);
+			observableList.clear();
+			observableList.addAll((ArrayList<Note>)evt.getNewValue());
 			break;
 		}
 	}
@@ -98,7 +96,7 @@ public class NoteBookView extends View implements NoteListViewInterface
 		{
 			if (n.getId() == id)
 			{
-				return n.clone();
+				return n;
 			}
 		}
 		throw new RuntimeException("can't find Note with id: "+id);

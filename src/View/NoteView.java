@@ -38,6 +38,7 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 				doneButton, labelButton;
 	@FXML private ChoiceBox<String> noteBookChooser;
 	private String noteBookChoosed;
+	private String lastnoteBookChoosed;
 	
 	// 用于控制editor以及notebook区域
 	@FXML private EditorView editorviewController;
@@ -156,6 +157,8 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 				editorviewController.updateContent(false));
 		
 		// 通知对应的notebook添加本note
+		// remove用来换笔记本
+		allbookviewController.removeNoteFromBook(((Note)model).getId(), noteBookChoosed);
 		allbookviewController.addNoteToBook(((Note)model).clone(), noteBookChoosed);
 	}
 	

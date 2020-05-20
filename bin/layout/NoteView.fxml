@@ -15,10 +15,10 @@
                <children>
                   <AnchorPane prefHeight="31.0" prefWidth="740.0">
                      <children>
-                        <Button fx:id="deleteButton" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#deleteButtonPressAction" text="delete" />
-                        <TextField fx:id="remindTimeText" layoutX="211.0" layoutY="14.0" prefHeight="30.0" prefWidth="94.0" />
-                        <Button fx:id="doneButton" layoutX="669.0" layoutY="14.0" mnemonicParsing="false" onAction="#doneButtonPressAction" text="done" />
-                        <Button fx:id="remindButton" layoutX="139.0" layoutY="14.0" mnemonicParsing="false" onAction="#remindButtonPressAction" text="remind" />
+                        <Button fx:id="deleteButton" layoutX="14.0" layoutY="9.0" mnemonicParsing="false" onAction="#deleteButtonPressAction" prefHeight="36.0" prefWidth="65.0" text="delete" />
+                        <TextField fx:id="remindTimeText" layoutX="211.0" layoutY="8.0" prefHeight="36.0" prefWidth="94.0" />
+                        <Button fx:id="doneButton" layoutX="669.0" layoutY="8.0" mnemonicParsing="false" onAction="#doneButtonPressAction" prefHeight="36.0" prefWidth="57.0" text="done" />
+                        <Button fx:id="remindButton" layoutX="139.0" layoutY="9.0" mnemonicParsing="false" onAction="#remindButtonPressAction" prefHeight="36.0" prefWidth="72.0" text="remind" />
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="54.0" prefWidth="740.0">
