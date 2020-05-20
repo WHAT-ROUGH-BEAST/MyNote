@@ -79,6 +79,19 @@ public class AllBookView extends View implements AllBookViewInterface
 		});	
 	}
 	
+	@FXML
+	private void searchButtonPressAction()
+	{
+		ArrayList<Note> result = ((UserController)controller).search(searchText.getText());
+		
+		NoteBook searchShowNoteBook = new NoteBook();
+		searchShowNoteBook.setName("");
+		searchShowNoteBook.setNotes(result);
+		
+		notelistviewController.setCurrentNoteBook(searchShowNoteBook);
+		notifyListButton.setText("Search < " + searchText.getText() + " > Result");
+	}
+	
 	private ArrayList<Remind> getRemindItems()
 	{
 		ArrayList<Remind> items = new ArrayList<Remind>();

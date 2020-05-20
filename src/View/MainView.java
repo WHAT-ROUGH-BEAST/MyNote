@@ -55,6 +55,7 @@ public class MainView extends View implements MainViewInterface
 		noteviewController.setCurrentUser((User)model);
 	}
 	
+	// TODO : 开机读数据
 	private User readUserInfo(String Account)
 	{
 		try
@@ -92,7 +93,16 @@ public class MainView extends View implements MainViewInterface
 			File choosedFile = IOOperator.ChooseFile(importButton.getScene().getWindow(), "Note");
 			String path = choosedFile.getAbsolutePath();
 			Note importNote = (Note)IOOperator.deserialize(path);
-	        noteviewController.updateNote(importNote);
+			
+			// 防止出现重id的bug
+			Note importNoteCopy = new Note();
+			importNoteCopy.setAlert(importNote.getAlert());
+			importNoteCopy.setContent(importNote.getContent());
+			importNoteCopy.setLabels(importNote.getLabels());
+			importNoteCopy.setTitle(importNote.getTitle());
+			
+			//
+	        noteviewController.updateNote(importNoteCopy);
 		}
 		catch (Exception e)
 		{

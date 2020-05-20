@@ -66,7 +66,6 @@ public class User extends Model implements Serializable
 		{
 			names.add(noteBook.getName());
 		}
-//		observer.firePropertyChange("noteBookNamesChanged", null, names);
 		
 		// TODO:
 		observer.firePropertyChange("new noteBooks", null, names);

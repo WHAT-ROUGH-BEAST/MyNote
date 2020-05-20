@@ -19,6 +19,7 @@ interface AllBookControllerInterface
 	void setCurrentUser(Model model);
 	void updateNoteBook(NoteBook updatedNoteBook);
 	void setNoteBookNameListener(View listener);
+	ArrayList<Note> search(String searchText);
 }
 
 public class UserController extends Controller 
@@ -80,6 +81,37 @@ public class UserController extends Controller
 		book.setName(noteBookName);
 		books.add(book);
 		((User)model).setNoteBooks(books);
+	}
+	
+	@Override
+	public ArrayList<Note> search(String searchText)
+	{
+		searchText = searchText.trim();
+		ArrayList<Note> result = new ArrayList<>();
+		
+		for (NoteBook book : ((User)model).getNoteBooks())
+		{
+			for (Note note : book.getNotes())
+			{
+				String labelStr = "";
+				try
+				{
+					labelStr = note.getLabels().toString()
+							.substring(1, note.getLabels().toString().length()-1)
+							.replace(',', ' ');
+				}
+				catch(Exception e)
+				{
+					labelStr = " ";
+				}
+				
+				if (labelStr.contains(searchText)
+						|| note.getTitle().contains(searchText))
+					result.add(note);
+			}
+		}
+		
+		return result;
 	}
 
 	@Override

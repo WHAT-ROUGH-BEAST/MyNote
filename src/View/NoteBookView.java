@@ -34,7 +34,6 @@ public class NoteBookView extends View implements NoteListViewInterface
 	PropertyChangeSupport listObserver = new PropertyChangeSupport(this);
 	
 	@FXML private ListView<Note> noteList;
-//	private ObservableList<Note> observableList;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
@@ -111,7 +110,8 @@ public class NoteBookView extends View implements NoteListViewInterface
 	{
 		return ((NoteBookController)controller).removeNote(id);
 	}
-
+	
+	@Override
 	public void setCurrentNoteBook(NoteBook noteBook)
 	{	
 		model.removePropertyChangeListener(this);
