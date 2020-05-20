@@ -44,9 +44,10 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 	@FXML private EditorView editorviewController;
 	@FXML private AllBookView allbookviewController;
 	
-	private void setNoteBookChoosed(String noteBookName)
+	private void setNoteBookChoosed(String noteBookName, String lastnoteBookName)
 	{
 		noteBookChoosed = noteBookName;
+		lastnoteBookChoosed = lastnoteBookName;
 	}
 	
 	@Override
@@ -158,7 +159,7 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 		
 		// 通知对应的notebook添加本note
 		// remove用来换笔记本
-		allbookviewController.removeNoteFromBook(((Note)model).getId(), noteBookChoosed);
+		allbookviewController.removeNoteFromBook(((Note)model).getId(), lastnoteBookChoosed);
 		allbookviewController.addNoteToBook(((Note)model).clone(), noteBookChoosed);
 	}
 	
@@ -202,7 +203,7 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 	
 	private void initNoteBookChooser()
 	{
-		setNoteBookChoosed("defaultBook");
+		setNoteBookChoosed("defaultBook", null);
 		noteBookChooser.setValue(noteBookChoosed);
 		
 		// 读入笔记本名，并注册笔记本名的监听者
@@ -214,7 +215,7 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 			@Override
 			public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2)
 			{
-				setNoteBookChoosed((arg2 == null)?arg0.getValue():arg2);
+				setNoteBookChoosed((arg2 == null)?arg0.getValue():arg2, arg1);
 			} 
         }); 
 	}

@@ -178,6 +178,9 @@ public class AllBookView extends View implements AllBookViewInterface
 	@Override
 	public void removeNoteFromBook(int id, String noteBookName)
 	{
+		if (null == noteBookName)
+			return;
+		
 		final User thisUser= (User)model;
 		// 找到本笔记本
 		for (NoteBook nb : thisUser.getNoteBooks())
