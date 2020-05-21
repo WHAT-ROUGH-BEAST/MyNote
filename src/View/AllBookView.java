@@ -33,6 +33,7 @@ interface AllBookViewInterface
 	ArrayList<String> getUserNoteBookNames();
 	void setNoteBookNameListener(View listener);
 	void setCurrentUser(User currentUser);
+	void search(String text);
 }
 
 public class AllBookView extends View implements AllBookViewInterface
@@ -90,6 +91,12 @@ public class AllBookView extends View implements AllBookViewInterface
 		
 		notelistviewController.setCurrentNoteBook(searchShowNoteBook);
 		notifyListButton.setText("Search < " + searchText.getText() + " > Result");
+	}
+	
+	@Override
+	public void search(String text)
+	{
+		searchText.setText(text);
 	}
 	
 	private ArrayList<Remind> getRemindItems()

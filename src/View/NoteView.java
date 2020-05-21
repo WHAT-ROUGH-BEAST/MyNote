@@ -27,7 +27,7 @@ interface NoteViewInterface
 	void setCurrentUser(User currentUser);
 	void updateNote(Note note);
 	Note getCurrentNote();
-	
+	void allBookViewSearch(String text);
 }
 
 public class NoteView extends View implements CurrentNoteListener, NoteViewInterface
@@ -237,5 +237,11 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 	public Note getCurrentNote()
 	{
 		return (Note)model.clone();
+	}
+
+	@Override
+	public void allBookViewSearch(String text)
+	{
+		allbookviewController.search(text);
 	}
 }

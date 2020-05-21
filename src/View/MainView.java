@@ -73,7 +73,7 @@ public class MainView extends View implements MainViewInterface
 	@Override
 	public void propertyChange(PropertyChangeEvent evt)
 	{
-
+		
 	}
 	
 	// button事件
@@ -152,7 +152,14 @@ public class MainView extends View implements MainViewInterface
 	@FXML 
 	private void searchButtonPressAction()
 	{
-		
+		TextInputDialog dialog = new TextInputDialog("search text here");
+		dialog.setTitle("Search");
+		dialog.setHeaderText("");
+		dialog.setContentText("pls input search text below:");
+		Optional<String> result = dialog.showAndWait();
+
+		result.ifPresent(text -> 
+			noteviewController.allBookViewSearch(text));
 	}
 
 	// 关闭时序列化
