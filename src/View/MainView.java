@@ -19,6 +19,7 @@ import Model.Model;
 import Model.Note;
 import Model.NoteBook;
 import Model.User;
+import application.UserManager;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -46,28 +47,12 @@ public class MainView extends View implements MainViewInterface
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		model = new User();
-		model.initialize();
+		model = UserManager.user;
 		controller = new UserController(model, this);
 		model.addPropertyChangeListener(this);
 		
 		// 设置用户
 		noteviewController.setCurrentUser((User)model);
-	}
-	
-	// TODO : 开机读数据
-	private User readUserInfo(String Account)
-	{
-		try
-		{
-			return (User)IOOperator.deserialize(".\\outputFile\\" 
-					+ Account +".user");
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return null;
-		}
 	}
 	
 	@Override

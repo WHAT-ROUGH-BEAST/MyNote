@@ -22,11 +22,7 @@ public class User extends Model implements Serializable
 		defaultBook.initialize();
 		defaultBook.setName("defaultBook");
 		
-		NoteBook Book1 = new NoteBook();
-		Book1.initialize();
-		Book1.setName("Book1");
-		
-		noteBooks = new ArrayList<NoteBook>(Arrays.asList(defaultBook, Book1));
+		noteBooks = new ArrayList<NoteBook>(Arrays.asList(defaultBook));
 	}
 	
 	// getter

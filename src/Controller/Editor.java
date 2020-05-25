@@ -4,9 +4,7 @@ import java.util.*;
 
 import Model.Model;
 import Model.NoteContent;
-import View.EditorView;
 import View.View;
-import javafx.scene.web.WebEngine;
 
 interface EditorInterface
 {

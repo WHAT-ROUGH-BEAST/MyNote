@@ -1,21 +1,12 @@
 package application;
 
-import java.io.IOException;
-
-import Controller.IOOperator;
-import Model.User;
 import View.MainView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.web.HTMLEditor;
 
 public class Main extends Application
 {

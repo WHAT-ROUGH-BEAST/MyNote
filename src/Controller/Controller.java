@@ -12,6 +12,6 @@ public abstract class Controller
 	{
 		this.model = model;
 		this.view = view;
-		model.initialize();
+//		model.initialize();
 	}
 }

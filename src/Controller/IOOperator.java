@@ -10,7 +10,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.*;
 
-import Model.Note;
 import javafx.stage.*;
 
 /**
