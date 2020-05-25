@@ -159,7 +159,7 @@ public class MainView extends View implements MainViewInterface
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("About");
 		alert.setHeaderText("");
-		alert.setContentText("This's MyNote, bitchs");
+		alert.setContentText("Here's MyNote, bitchs");
 
 		alert.showAndWait();
 	}

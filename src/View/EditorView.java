@@ -17,6 +17,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
 import javafx.scene.effect.DropShadow;
@@ -46,7 +47,6 @@ public class EditorView extends View implements EditorViewInterface
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		// mvc
 		model = new NoteContent();
 		model.initialize();
 		controller = new Editor(model, this);
@@ -58,9 +58,6 @@ public class EditorView extends View implements EditorViewInterface
 		
 		// add pic audio attachment buttons
 		addExtraButton();
-		ImgButton.setOnAction((event) -> onBtnAction("Img"));
-		AttachButton.setOnAction((event) -> onBtnAction("Attach"));
-		AudioButton.setOnAction((event) -> onBtnAction("Audio"));
 	}
 	
 	// 响应被观察者model中的改变
@@ -104,6 +101,10 @@ public class EditorView extends View implements EditorViewInterface
 		bar.getItems().add(AttachButton);
 		bar.getItems().add(AudioButton);
 		bar.getItems().add(new Separator(Orientation.VERTICAL));
+		
+		ImgButton.setOnAction((event) -> onBtnAction("Img"));
+		AttachButton.setOnAction((event) -> onBtnAction("Attach"));
+		AudioButton.setOnAction((event) -> onBtnAction("Audio"));
 	}
 	
 	private void onBtnAction(String actionType)
@@ -115,38 +116,51 @@ public class EditorView extends View implements EditorViewInterface
 			switch(actionType)
 			{
 				case "Img":
-					// TODO : insert text after cursor!!
-					// insertAfterCursor(htmlImgHead + base64data + htmlImgTail);
 					break;
 				case "Attach":
 					((Editor)controller).addAttach(base64data);
-					base64data = urlToPic("file");
+					base64data = urlToPic("file.png");
 					break;
 				case "Audio":
 					((Editor)controller).addAudio(base64data);
-					base64data = urlToPic("audio");
+					base64data = urlToPic("audio.png");
 					break;
 				default:
 					break;
 			}
 			
-			// 通过controller更新model
-			// TODO : 再加一个位置，应该是点击确认按钮之后才更
-			((Editor)controller).updateText(htmlEditor.getHtmlText() 
-					+ htmlExcecutor.htmlImgHead 
-					+ base64data 
-					+ htmlExcecutor.htmlImgTail);
+			insertPic(base64data);
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}   
 	}
+	
+	private void insertPic(String base64data)
+	{
+		try
+		{
+			insertAfterCursor(htmlExcecutor.htmlImgHead 
+					+ base64data
+					+ htmlExcecutor.htmlImgTail);
+			
+			((Editor)controller).updateText(htmlEditor.getHtmlText());
+		}
+		catch (Exception e)
+		{
+			// 无光标
+			((Editor)controller).updateText(htmlEditor.getHtmlText() 
+			+ htmlExcecutor.htmlImgHead
+			+ base64data
+			+ htmlExcecutor.htmlImgTail);
+		}
+	}
 
 	// 取得resource中的图片
 	private String urlToPic(String picName) throws Exception
 	{
-		URL url = getClass().getClassLoader().getResource("image/" + picName + ".png");
+		URL url = getClass().getClassLoader().getResource("image/" + picName);
 		String base64pic = IOOperator.getResourceImg(url);
 		return base64pic;
 	}
@@ -162,15 +176,10 @@ public class EditorView extends View implements EditorViewInterface
 	}
 	
 	// TODO : 实现在光标后添加图片
-	private void insertAfterCursor(String txt)
+	private void insertAfterCursor(String txt) throws Exception
 	{
-        try {
-            engine.executeScript(htmlExcecutor.jsCodeInsertHtml.
-            		replace("####html####",
-            				htmlExcecutor.escapeJavaStyleString(txt, true, true)));
-        } catch (JSException e) {
-            e.printStackTrace();
-        }
+		engine.executeScript(htmlExcecutor.jsCodeInsertHtml.replace("####html####",
+				htmlExcecutor.escapeJavaStyleString(txt, true, true)));
 	}
 }
 
@@ -181,16 +190,17 @@ class htmlExcecutor
 	htmlImgTail = "\"/></p>";
 	
 	static String jsCodeInsertHtml = 
-			"function insertHtmlAtCursor(html) {\n"
-			        + "    var range, node;\n"
-			        + "    if (window.getSelection && window.getSelection().getRangeAt) {\n"
-			        + "        range = window.getSelection().getRangeAt(0);\n"
-			        + "        node = range.createContextualFragment(html);\n"
-			        + "        range.insertNode(node);\n"
-			        + "    } else if (document.selection && document.selection.createRange) {\n"
-			        + "        document.selection.createRange().pasteHTML(html);\n"
-			        + "    }\n"
-			        + "}insertHtmlAtCursor('####html####')";
+			"function insertHtmlAtCursor(html) {\n" +
+                    "    var range, node;\n" +
+                    "    if (window.getSelection && window.getSelection().getRangeAt) {\n" +
+                    "        range = window.getSelection().getRangeAt(0);\n" +
+                    "        node = range.createContextualFragment(html);\n" +
+                    "        range.insertNode(node);\n" +
+                    "    } else if (document.selection && document.selection.createRange) {\n" +
+                    "        document.selection.createRange().pasteHTML(html);\n" +
+                    "    }\n" +
+                    "}\n"
+                    + "insertHtmlAtCursor('####html####')"; 
 	
     private static String hex(int i) {
         return Integer.toHexString(i);
