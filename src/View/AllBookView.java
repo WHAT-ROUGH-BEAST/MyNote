@@ -28,6 +28,7 @@ import javafx.util.Callback;
 interface AllBookViewInterface
 {
 	void addNoteToBook(Note note, String noteBookChoosed);
+	void removeDoneRemindItem();
 	void removeNoteFromBook(int id, String noteBookChoosed);
 	void setCurrentNoteListener(View Listlistener);
 	ArrayList<String> getUserNoteBookNames();
@@ -52,6 +53,18 @@ public class AllBookView extends View implements AllBookViewInterface
 		model.initialize();
 		controller = new UserController(model, this);
 		model.addPropertyChangeListener(this);  
+	}
+	
+	@Override
+	public void setCurrentUser(User currentUser)
+	{
+		if (model == currentUser)
+			return;
+		
+		model.removePropertyChangeListener(this);
+		model = currentUser;
+		model.addPropertyChangeListener(this);
+		((UserController)controller).setCurrentUser(model);
 		
 		initRemindList();
 		initListChooser();
@@ -138,21 +151,22 @@ public class AllBookView extends View implements AllBookViewInterface
 			notifyListButton.setText(chooseHelper);
 			
 			// remindList深删除已打勾的事项
-			removeDoneRemindItem();
 			break;
 		default:
 			break;
 		}
 	}
 	
-	private void removeDoneRemindItem()
+	@Override
+	public void removeDoneRemindItem()
 	{
 		for (Remind item : remindList.getItems())
 		{
 			if (item.ifDone())
 			{
-				addNoteToBook(item.getNote(), item.getBookName());
 				removeNoteFromBook(item.getNote().getId(), item.getBookName());
+				addNoteToBook(item.getNote(), item.getBookName());
+				return;
 			}
 		}
 	}
@@ -185,11 +199,11 @@ public class AllBookView extends View implements AllBookViewInterface
 	
 	private void addToRemind(Note note, String noteBookName)
 	{
-		if (null == note.getAlert())
-			return;
-		
 		if (null == findRemindById(note.getId(), noteBookName))
 		{
+			if (null == note.getAlert())
+				return;
+			
 			remindList.getItems().add(new Remind(note, noteBookName));
 		}
 		else
@@ -264,17 +278,5 @@ public class AllBookView extends View implements AllBookViewInterface
 	public void setNoteBookNameListener(View listener)
 	{
 		((UserController)controller).setNoteBookNameListener(listener);
-	}
-
-	@Override
-	public void setCurrentUser(User currentUser)
-	{
-		if (model == currentUser)
-			return;
-		
-		model.removePropertyChangeListener(this);
-		model = currentUser;
-		model.addPropertyChangeListener(this);
-		((UserController)controller).setCurrentUser(model);
 	}
 }

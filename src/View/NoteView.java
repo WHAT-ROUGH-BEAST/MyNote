@@ -28,6 +28,7 @@ interface NoteViewInterface
 	void updateNote(Note note);
 	Note getCurrentNote();
 	void allBookViewSearch(String text);
+	void refreshRemind();
 }
 
 public class NoteView extends View implements CurrentNoteListener, NoteViewInterface
@@ -243,5 +244,11 @@ public class NoteView extends View implements CurrentNoteListener, NoteViewInter
 	public void allBookViewSearch(String text)
 	{
 		allbookviewController.search(text);
+	}
+
+	@Override
+	public void refreshRemind()
+	{
+		allbookviewController.removeDoneRemindItem();
 	}
 }

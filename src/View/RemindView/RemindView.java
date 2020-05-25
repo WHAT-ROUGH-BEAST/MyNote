@@ -64,6 +64,12 @@ public class RemindView
 	{
 		setData(data);
 		checkBox.setText(data.getNote().getTitle() + ":" + data.getBookName());
+		if (null == data.getNote().getAlert())
+		{
+			data.setDone();
+			onSelectedAction();
+		}
+		
 		label.setText(data.getNote().getAlert().get(Calendar.YEAR)  + "/" 
 					+(data.getNote().getAlert().get(Calendar.MONTH) + 1) + "/"
 					+ data.getNote().getAlert().get(Calendar.DAY_OF_MONTH));

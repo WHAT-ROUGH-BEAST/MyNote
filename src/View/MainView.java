@@ -22,7 +22,11 @@ import Model.User;
 import application.UserManager;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -40,6 +44,8 @@ public class MainView extends View implements MainViewInterface
 {
 	@FXML Button newButton, importButton,
 				exportButton, notebookButton, searchButton;
+	@FXML MenuItem importMenuItem, exportMenuItem, newMenuItem, 
+				noteBookMenuItem, aboutMenuItem;
 	
 	@FXML NoteView noteviewController;
 	@FXML VBox root;
@@ -146,6 +152,17 @@ public class MainView extends View implements MainViewInterface
 		result.ifPresent(text -> 
 			noteviewController.allBookViewSearch(text));
 	}
+	
+	@FXML
+	private void aboutMenuAction()
+	{
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("About");
+		alert.setHeaderText("");
+		alert.setContentText("This's MyNote, bitchs");
+
+		alert.showAndWait();
+	}
 
 	// 关闭时序列化
 	@Override
@@ -155,6 +172,7 @@ public class MainView extends View implements MainViewInterface
 		{
 			try
 			{
+				noteviewController.refreshRemind();
 				IOOperator.serialize(".\\outputFile\\" 
 							+ ((User)model).getAccount()+".user", model);
 			}
