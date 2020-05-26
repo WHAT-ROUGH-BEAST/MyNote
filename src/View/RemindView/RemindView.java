@@ -66,7 +66,9 @@ public class RemindView
 		checkBox.setText(data.getNote().getTitle() + ":" + data.getBookName());
 		if (null == data.getNote().getAlert())
 		{
-			data.setDone();
+			if (data.ifDone())
+				data.setDone();
+			
 			onSelectedAction();
 		}
 		

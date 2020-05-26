@@ -3,14 +3,27 @@ package View;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.NotSerializableException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 import Controller.Editor;
 import Model.Model;
 import Model.NoteContent;
+import application.Main;
 import Controller.IOOperator;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
@@ -21,12 +34,17 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.text.Text;
 import javafx.scene.web.HTMLEditor;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import netscape.javascript.JSException;
+import netscape.javascript.JSObject;
 
 interface EditorViewInterface
 {
@@ -111,25 +129,33 @@ public class EditorView extends View implements EditorViewInterface
 	{
 		try
 		{
-        	String base64data = IOOperator.importDataFile(
-        			IOOperator.ChooseFile(htmlEditor.getScene().getWindow(), actionType));        	
+			File file = IOOperator.ChooseFile(htmlEditor.getScene().getWindow(), actionType);
+			String[] fileName = file.getAbsolutePath().split("\\\\");
+			
+        	String base64data = IOOperator.importDataFile(file);
+        	String pic = htmlExcecutor.htmlImgHead + base64data + htmlExcecutor.htmlImgTail;
 			switch(actionType)
 			{
 				case "Img":
 					break;
 				case "Attach":
-					((Editor)controller).addAttach(base64data);
-					base64data = urlToPic("file.png");
+//					((Editor)controller).addAttach(base64data);
+					pic = urlToPic("file.png");
+					pic = htmlExcecutor.getDownloadHead(base64data, fileName[fileName.length-1]) 
+							+ htmlExcecutor.htmlImgHead + pic + htmlExcecutor.htmlImgTail;
 					break;
 				case "Audio":
-					((Editor)controller).addAudio(base64data);
-					base64data = urlToPic("audio.png");
+//					((Editor)controller).addAudio(base64data);
+					pic = urlToPic("audio.png");
+					pic = htmlExcecutor.getPlayHead(base64data, fileName[fileName.length-1])
+							+ htmlExcecutor.htmlImgHead + pic + htmlExcecutor.htmlImgTail;
 					break;
 				default:
 					break;
 			}
+
+			insertPic(pic);
 			
-			insertPic(base64data);
 		}
 		catch (Exception e)
 		{
@@ -137,23 +163,17 @@ public class EditorView extends View implements EditorViewInterface
 		}   
 	}
 	
-	private void insertPic(String base64data)
+	private void insertPic(String pic)
 	{
 		try
 		{
-			insertAfterCursor(htmlExcecutor.htmlImgHead 
-					+ base64data
-					+ htmlExcecutor.htmlImgTail);
-			
+			insertAfterCursor(pic);
 			((Editor)controller).updateText(htmlEditor.getHtmlText());
 		}
 		catch (Exception e)
 		{
 			// 无光标
-			((Editor)controller).updateText(htmlEditor.getHtmlText() 
-			+ htmlExcecutor.htmlImgHead
-			+ base64data
-			+ htmlExcecutor.htmlImgTail);
+			((Editor)controller).updateText(htmlEditor.getHtmlText() + pic);
 		}
 	}
 
@@ -171,21 +191,75 @@ public class EditorView extends View implements EditorViewInterface
 		Node webNode = htmlEditor.lookup(".web-view");
 		if (!(webNode instanceof WebView)) 
 			throw new RuntimeException();
+		
 		WebView webView = (WebView) webNode;
 		engine = webView.getEngine();
+		
+		// html内点击下载
+		EventInHtml eventInHtml = new EventInHtml();
+		engine.getLoadWorker().stateProperty().addListener(new ChangeListener<State>()
+		{
+			@Override
+			public void changed(ObservableValue ov, State oldState, State newState)
+			{
+				if (newState == State.SUCCEEDED)
+				{
+					JSObject win = (JSObject) engine.executeScript("window");
+                    win.setMember("eventInHtml", eventInHtml);
+				}
+			}
+		});
 	}
 	
-	// TODO : 实现在光标后添加图片
 	private void insertAfterCursor(String txt) throws Exception
 	{
 		engine.executeScript(htmlExcecutor.jsCodeInsertHtml.replace("####html####",
 				htmlExcecutor.escapeJavaStyleString(txt, true, true)));
 	}
+	
+	// html内点击下载
+	public class EventInHtml
+	{
+		private MediaPlayer mediaPlayer;
+		
+		public void download(String base64data, String name)
+		{
+			// 下载
+			String path = IOOperator.ChooseFolder(htmlEditor.getScene().getWindow());
+			try
+			{
+				IOOperator.serialize(path + "\\" + name, Base64.getDecoder().decode(base64data));
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		public void play(String base64data, String name)
+		{
+			try
+			{
+				Path path = Paths.get(".\\outputFile\\audio\\" + name);
+				Files.write(path, Base64.getDecoder().decode(base64data));
+				
+				Media hit = new Media(path.toUri().toString());
+				mediaPlayer = new MediaPlayer(hit);
+				mediaPlayer.play();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
 }
 
 class htmlExcecutor
 {
-	public static String 
+	static String 
+	htmlImgPlay = "<a href=\"javascript:eventInHtml.download();\">",
+	htmlImgDownload = "<a href=\"javascript:eventInHtml.play();\">",
 	htmlImgHead = "<p><img src=\"data:image/;base64, ",
 	htmlImgTail = "\"/></p>";
 	
@@ -199,8 +273,18 @@ class htmlExcecutor
                     "    } else if (document.selection && document.selection.createRange) {\n" +
                     "        document.selection.createRange().pasteHTML(html);\n" +
                     "    }\n" +
-                    "}\n"
-                    + "insertHtmlAtCursor('####html####')"; 
+                    "}\n" +
+                    "insertHtmlAtCursor('####html####')";
+	
+	static String getPlayHead(String base64data, String name)
+	{
+		return "<a href=\"javascript:eventInHtml.play('" + base64data + "', '"+ name +"');\">"+ name +"\n";
+	}
+	
+	static String getDownloadHead(String base64data, String name)
+	{
+		return "<a href=\"javascript:eventInHtml.download('" + base64data + "', '"+ name +"');\">"+ name +"\n";
+	}
 	
     private static String hex(int i) {
         return Integer.toHexString(i);

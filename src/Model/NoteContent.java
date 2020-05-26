@@ -96,7 +96,7 @@ public class NoteContent extends Model
  * 要实现存base64，将base4存为已知地址的本地文件并返回uri
  * 要求在htmleditor中显示时，pic返回自己的uri，附件和音频返回
  */
-abstract class ContentFile
+abstract class ContentFile implements Serializable
 {
 	// 记id，方便查找
 	private static int cnt = 0;

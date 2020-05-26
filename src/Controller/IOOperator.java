@@ -47,8 +47,8 @@ public class IOOperator
         fileChooser.getExtensionFilters().add(
         		new FileChooser.ExtensionFilter(actionType, filter.get(actionType)));
         File selectedFile = fileChooser.showOpenDialog(window);
-//        if (selectedFile == null) 
-//        	throw new NullPointerException();
+        if (selectedFile == null) 
+        	throw new NullPointerException();
         
         return selectedFile;
 	}
